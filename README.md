@@ -425,6 +425,8 @@ Initial data will be inserted into the following tables:
 
 ## 📚 API Documentation
 
+![docs](docs/docs.png)
+
 Auto-generated Swagger docs from Fiber comments:
 
 ```go
