@@ -46,7 +46,7 @@ func NewAuditMiddleware(auditRepo Repository) fiber.Handler {
 		responseTime := time.Since(start).Milliseconds()
 
 		// Get user information if available
-		var userID *uint
+		var userID *string
 		var userEmail, apiKey string
 		
 		if user, ok := c.Locals("user").(*access.User); ok {

@@ -6,7 +6,7 @@ import (
 
 type AuditLog struct {
 	ID             uint      `json:"id" gorm:"primaryKey"`
-	UserID         *uint     `json:"user_id" gorm:"index"`
+	UserID         *string   `json:"user_id" gorm:"type:uuid;index"`
 	UserEmail      string    `json:"user_email" gorm:"index"`
 	APIKey         string    `json:"api_key" gorm:"index"`
 	Method         string    `json:"method" gorm:"not null"`
