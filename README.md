@@ -336,13 +336,32 @@ This API features a comprehensive API key expiration management system:
 
 ## 🚦 API Rate Limiting System
 
-Gunakan middleware `ratelimit` untuk membatasi:
-- 120 request per menit per IP
-- Bisa dikustom per masing-masing key
+This API includes a robust rate limiting system to control the number of requests per API key.
+
+### Rate Limiting Features:
+- ✅ **Per-User Limits**: Each API key has its own individual rate limit
+- ✅ **Default Limit**: 120 requests per minute (configurable)
+- ✅ **Custom Limits**: Limits can be customized per access key as needed
+- ✅ **Rate Limit Headers**: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`
+- ✅ **Graceful Rejection**: 429 Too Many Requests dengan pesan yang jelas
+
+
+#### Implementasi:
+- In-memory tracking of request timestamps
+- Middleware to validate and enforce rate limits
+- Endpoint-level management with permission control
+
+#### Benefits:
+- 🛡️ **DDoS Protection**: Prevents abuse from a single client
+- 💰 **Cost Control**: Limits excessive resource usage
+- 🎯 **Tiered Access**: Allows different rate limits per user tier
+- 📊 **Usage Insights**: Enables monitoring of request patterns
+- 🔄 **Fair Usage**: Ensures no single client consumes all resources
+
 
 ## 🧪 Testing
 
-- Gunakan token user untuk testing autentikasi
+- Use token for authentication testing
 
 ## 🧩 Add New Module
 
