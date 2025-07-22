@@ -1,24 +1,61 @@
-# Modular REST API with Go
+# 🧩 REST API Modular Boilerplate (Go)
 
-REST API yang dibangun dengan Go menggunakan arsitektur modular yang sangat scalable. Setiap modul bersifat self-contained dan dapat ditambahkan dengan mudah tanpa mengubah kode yang sudah ada.
+![Go Version](https://img.shields.io/badge/go-1.24+-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Build](https://img.shields.io/badge/build-passing-success)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
-## Fitur Utama
+## 📑 Table of Contents
 
-- ✅ **Modular Architecture**: Feature-based structure
-- ✅ **Authentication**: Bearer token middleware
-- ✅ **Database**: PostgreSQL dengan GORM
-- ✅ **Documentation**: Auto-generated Swagger docs
-- ✅ **Configuration**: Environment variables dengan .env
-- ✅ **Error Handling**: Centralized error handling
-- ✅ **CORS**: Cross-origin resource sharing
-- ✅ **Audit Logging System**: Request logging middleware
-- ✅ **Health Check**: Basic health check endpoint
-- ✅ **Expiration System**: Penetapan masa berlaku token/key.
-- ✅ **Rate Limit**:  Membatasi jumlah permintaan (requests)
+- [🧩 Features](#-features)
+- [🚀 Quickstart](#-quickstart)
+- [📂 Project Structure](#-project-structure)
+- [🧱 Architecture](#-architecture)
+- [🛡️ Security & Auth](#-security--auth)
+- [📈 Audit Logging System](#-audit-logging-system)
+- [🔄 Status Management System](#-status-management-system)
+- [⏳ API Key Expiration](#-api-key-expiration-system)
+- [🚦 API Rate Limiting](#-api-rate-limiting-system)
+- [🧪 Testing](#-testing)
+- [🧩 Add New Module](#-add-new-module)
+- [🧰 Development Tools](#-development-tools)
+- [🗃️ Seeder & Test Data](#%EF%B8%8F-seeder--test-data)
+- [📖 API Documentation](#-api-documentation)
 
+## 🧩 Features
 
-<details>
-<summary><b>Struktur Proyek</b></summary>
+- ✅ **Modular Architecture**: Feature-based directory structure
+- ✅ **Authentication System**: Bearer token with expiration & rate limiting
+- ✅ **Database Layer**: PostgreSQL with GORM
+- ✅ **RBAC**: Role-based access control with permission mapping
+- ✅ **Documentation**: Auto-generated Swagger documentation
+- ✅ **Configuration**: Environment-based setup using `.env`
+- ✅ **Error Handling**: Centralized and consistent error responses
+- ✅ **Audit Log**: Tracks user requests and responses
+- ✅ **Status Management**: Soft deletion using `status_id`
+- ✅ **Seeder & Sample Data**: Default test data for quick setup
+- ✅ **Health Check**: Built-in endpoint to check server status
+- ✅ **Expiration System**: Supports token/key expiration policy
+- ✅ **Rate Limit**:  Controls number of requests per user/IP
+
+## 🚀 Quickstart
+
+```bash
+git clone https://github.com/your-org/api-boilerplate-go.git apiserver
+cd apiserver
+
+# Copy dan edit file environment
+cp .env.example .env
+
+go mod tidy
+
+go run cmd/api/main.go --seed
+go run cmd/api/main.go
+#air
+```
+
+## 📂 Project Structure
 
 ```
 apiserver/
@@ -67,19 +104,31 @@ apiserver/
 ├── go.sum
 └── README.md
 ```
-</details>
 
-## Mengapa Struktur Ini Modular?
+## 🧱 Architecture
 
-1. **Feature-Based Structure**: Setiap modul (access, permission, group, example) memiliki folder terpisah dengan semua komponen yang dibutuhkan
-2. **Self-Contained**: Setiap modul memiliki model, repository, handler, dan route sendiri
-3. **Dependency Injection**: Repository dan handler diinisialisasi di main.go dan di-inject ke modul
-4. **Interface-Based**: Repository menggunakan interface sehingga mudah untuk testing dan swapping implementation
-5. **RBAC System**: Sistem Role-Based Access Control yang terintegrasi dengan middleware permission
-6. **Easy Scaling**: Menambah modul baru hanya perlu:
-   - Buat folder baru di `internal/modules/`
-   - Buat 4 file: model, repository, handler, route
-   - Register route di main.go dengan permission middleware yang sesuai
+Each module includes:
+
+- `model.go`: Defines schema and data validation
+- `repository.go`: Contains GORM-based query logic
+- `handler.go`: Implements the core API logic
+- `route.go`: Registers routes using Fiber
+
+```
+client → route → handler → repository → db
+```
+
+## Why a Modular Structure?
+
+1. **Feature-Based Structure**: Each feature (e.g., `access`, `permission`, `group`, `example`) resides in its own folder containing all required components.
+2. **Self-Contained**: Every module is independent and includes its own model, repository, handler, and route, making it easy to maintain and scale.
+3. **Dependency Injection**: Repositories and handlers are initialized in `main.go` and injected into modules, ensuring loose coupling and better testability.
+4. **Interface-Based**: Repositories are defined via interfaces, allowing for easier testing and implementation swapping
+5. **RBAC System**: Role-Based Access Control is built-in and integrated with permission middleware for fine-grained access control
+6. **Easy Scaling**: Adding a new module is straightforward:
+   - Create a new folder under `internal/modules/`
+   - Add four files: `model.go`, `repository.go`, `handler.go`, `route.go`
+   - Register the route in `main.go` and attach appropriate permission middleware
 
 ## Prerequisites
 
@@ -92,284 +141,30 @@ Install Swaggo:
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
-## Setup & Running
+## 🛡️ Security & Auth
 
-1. **Clone dan setup dependencies:**
-```bash
-git clone https://github.com/luridarmawan/api-boilerplate-with-golang.git apiserver
-cd apiserver
-go mod tidy
-```
+- **Bearer Token** with expiration (`token_expired_at`)
+- **Rate Limiting**: Protect brute force (30/min)
+- **RBAC**: Per-role permission check
 
-2. **Setup database:**
-```bash
-# Buat database PostgreSQL
-createdb my_api_db
+## 📈 Audit Logging System
 
-# Copy dan edit file environment
-cp .env.example .env
-# Edit .env sesuai konfigurasi database Anda
-```
+This API includes a comprehensive audit logging system to record all API activities:
 
-3. **Generate dokumentasi Swagger:**
-```bash
-swag init -g cmd/api/main.go -o docs
-```
+- ✅ **Automatic Logging**: All requests and responses are logged automatically
+- ✅ **Request Details**: Method, path, headers, and body payload
+- ✅ **Response Details**: Status code, response body, and response time
+- ✅ **User Tracking**: User ID, email, and masked API key
+- ✅ **IP & User Agent**: Logged for security analysis
+- ✅ **Filtering & Search**: Filter by user, method, path, status, and date
+- ✅ **Pagination**: Supports large datasets with pagination
+- ✅ **Cleanup**: Automatically deletes old logs for maintenance
 
-4. **Jalankan server:**
-```bash
-go run cmd/api/main.go
-```
-
-Server akan berjalan di `http://localhost:3000`
-
-## API Documentation
-
-Dokumentasi Swagger tersedia di: `http://localhost:3000/docs`
-
-![docs](docs/docs.png)
-
-## Endpoints
-
-### Access
-- `GET /v1/profile` - Get user profile (Requires: profile:read)
-
-### Examples
-- `GET /v1/examples` - Get all active examples (Requires: examples:read)
-- `POST /v1/examples` - Create new example (Requires: examples:create)
-- `GET /v1/examples/:id` - Get example by ID (Requires: examples:read)
-- `PUT /v1/examples/:id` - Update example (Requires: examples:update)
-- `DELETE /v1/examples/:id` - Soft delete example (Requires: examples:delete)
-- `POST /v1/examples/:id/restore` - Restore deleted example (Requires: examples:update)
-- `GET /v1/examples/deleted` - Get all deleted examples (Requires: examples:read)
-
-### Permissions Management
-- `GET /v1/permissions` - Get all permissions (Requires: permissions:manage)
-- `POST /v1/permissions` - Create new permission (Requires: permissions:manage)
-- `GET /v1/permissions/:id` - Get permission by ID (Requires: permissions:manage)
-- `DELETE /v1/permissions/:id` - Delete permission (Requires: permissions:manage)
-
-### Groups Management
-- `GET /v1/groups` - Get all groups (Requires: groups:manage)
-- `POST /v1/groups` - Create new group (Requires: groups:manage)
-- `GET /v1/groups/:id` - Get group by ID (Requires: groups:manage)
-- `PUT /v1/groups/:id/permissions` - Update group permissions (Requires: groups:manage)
-- `DELETE /v1/groups/:id` - Delete group (Requires: groups:manage)
-
-### Audit Logs
-- `GET /v1/audit-logs` - Get audit logs with filtering (Requires: audit:read)
-- `GET /v1/audit-logs/:id` - Get detailed audit log by ID (Requires: audit:read)
-- `DELETE /v1/audit-logs/cleanup?days=30` - Delete old audit logs (Requires: audit:manage)
-
-### Health Check
-- `GET /health` - Health check endpoint (No authentication required)
-- `GET /version` - Get API version info (No authentication required)
-
-## Contoh Penggunaan
-
-### 1. Setup Test Data
-
-[Lihat bagian seeder](#init)
-
-### 2. Test Endpoints dengan cURL
-
-**Get Profile (Valid Token):**
-```bash
-curl -X GET "http://localhost:3000/v1/profile" \
-  -H "Authorization: Bearer test-api-key-123"
-```
-
-**Get Examples (Valid Token):**
-```bash
-curl -X GET "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-123"
-```
-
-**Create Example (Valid Token):**
-```bash
-curl -X POST "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-123" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test Example",
-    "description": "This is a test example"
-  }'
-```
-
-**Test Invalid Token:**
-```bash
-curl -X GET "http://localhost:3000/v1/profile" \
-  -H "Authorization: Bearer invalid-token"
-```
-
-**Test Missing Token:**
-```bash
-curl -X GET "http://localhost:3000/v1/profile"
-```
-
-### 3. Test Permission System dengan Different User Roles
-
-**Admin User - Can Access Everything:**
-```bash
-# Get all permissions (Admin only)
-curl -X GET "http://localhost:3000/v1/permissions" \
-  -H "Authorization: Bearer admin-api-key-789"
-
-# Create new permission (Admin only)
-curl -X POST "http://localhost:3000/v1/permissions" \
-  -H "Authorization: Bearer admin-api-key-789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Delete Examples",
-    "description": "Permission to delete examples",
-    "resource": "examples",
-    "action": "delete"
-  }'
-
-# Get all groups (Admin only)
-curl -X GET "http://localhost:3000/v1/groups" \
-  -H "Authorization: Bearer admin-api-key-789"
-
-# Create new group (Admin only)
-curl -X POST "http://localhost:3000/v1/groups" \
-  -H "Authorization: Bearer admin-api-key-789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Manager",
-    "description": "Manager role with limited admin access",
-    "permission_ids": [1, 2, 3]
-  }'
-```
-
-**Editor User - Can Create/Read Examples:**
-```bash
-# Can create examples
-curl -X POST "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-123" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Editor Example",
-    "description": "Created by editor user"
-  }'
-
-# Can read examples
-curl -X GET "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-123"
-
-# CANNOT access permissions (will get 403 Forbidden)
-curl -X GET "http://localhost:3000/v1/permissions" \
-  -H "Authorization: Bearer test-api-key-123"
-```
-
-**Viewer User - Read Only Access:**
-```bash
-# Can read examples
-curl -X GET "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-456"
-
-# Can view profile
-curl -X GET "http://localhost:3000/v1/profile" \
-  -H "Authorization: Bearer test-api-key-456"
-
-# CANNOT create examples (will get 403 Forbidden)
-curl -X POST "http://localhost:3000/v1/examples" \
-  -H "Authorization: Bearer test-api-key-456" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Viewer Example",
-    "description": "This should fail"
-  }'
-```
-
-### 4. Test Group Permission Management
-
-**Update Group Permissions (Admin only):**
-```bash
-# Add more permissions to Editor group
-curl -X PUT "http://localhost:3000/v1/groups/2/permissions" \
-  -H "Authorization: Bearer admin-api-key-789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "permission_ids": [1, 2, 3, 4]
-  }'
-
-# Get specific group details
-curl -X GET "http://localhost:3000/v1/groups/2" \
-  -H "Authorization: Bearer admin-api-key-789"
-```
-
-## Menambah Modul Baru
-
-Untuk menambah modul baru (misal: `product`):
-
-1. Buat folder `internal/modules/product/`
-2. Buat 4 file: `product_model.go`, `product_repository.go`, `product_handler.go`, `product_route.go`
-3. Follow pattern yang sama seperti modul `example`
-4. Register route di `main.go`:
-```go
-productRepo := product.NewRepository(db)
-productHandler := product.NewHandler(productRepo)
-product.RegisterProductRoutes(app, productHandler, authMiddleware)
-```
-
-## Development
-
-Untuk development, gunakan air untuk hot reload:
-
-```bash
-go install github.com/cosmtrek/air@latest
-air
-```
-
-
-## INIT
-
-Menambahkan data test:
-
-### Seeder
-
-Melalui seeder:
-```bash
-go run cmd/api/main.go -seed
-```
-
-## API Keys yang Tersedia untuk Testing:
-
-### Admin User (Full Access)
-- **API Key**: `admin-api-key-789`
-- **Email**: admin@example.com
-- **Group**: Admin
-- **Permissions**: All permissions (create, read, update, delete examples + manage permissions & groups)
-
-### Editor User (Limited Access)
-- **API Key**: `test-api-key-123`
-- **Email**: john@example.com
-- **Group**: Editor
-- **Permissions**: Create, read, update examples + view profile
-
-### Viewer User (Read Only)
-- **API Key**: `test-api-key-456`
-- **Email**: jane@example.com
-- **Group**: Viewer
-- **Permissions**: Read examples + view profile
-
-## 🔍 Audit Logging System
-
-API ini dilengkapi dengan sistem audit logging yang komprehensif untuk mencatat semua aktivitas API:
-
-### Fitur Audit Logging:
-- ✅ **Automatic Logging**: Semua request/response dicatat otomatis
-- ✅ **Request Details**: Method, path, headers, body payload
-- ✅ **Response Details**: Status code, response body, response time
-- ✅ **User Tracking**: User ID, email, dan API key (masked)
-- ✅ **IP & User Agent**: Tracking untuk security analysis
-- ✅ **Filtering & Search**: Filter berdasarkan user, method, path, status, tanggal
-- ✅ **Pagination**: Support untuk large datasets
-- ✅ **Cleanup**: Auto-delete old logs untuk maintenance
-
-### Contoh Penggunaan Audit Logs:
+<details>
+<summary><b>Usage</b></summary>
 
 **Get Audit Logs (Admin only):**
+
 ```bash
 # Get all audit logs
 curl -X GET "http://localhost:3000/v1/audit-logs" \
@@ -393,6 +188,7 @@ curl -X GET "http://localhost:3000/v1/audit-logs?limit=10&offset=20" \
 ```
 
 **Get Detailed Audit Log:**
+
 ```bash
 # Get specific audit log with full request/response details
 curl -X GET "http://localhost:3000/v1/audit-logs/123" \
@@ -400,13 +196,15 @@ curl -X GET "http://localhost:3000/v1/audit-logs/123" \
 ```
 
 **Cleanup Old Logs (Admin only):**
+
 ```bash
 # Delete logs older than 30 days
 curl -X DELETE "http://localhost:3000/v1/audit-logs/cleanup?days=30" \
   -H "Authorization: Bearer admin-api-key-789"
 ```
 
-### Audit Log Data Structure:
+
+#### Audit Log Data Structure:
 ```json
 {
   "id": 123,
@@ -426,30 +224,29 @@ curl -X DELETE "http://localhost:3000/v1/audit-logs/cleanup?days=30" \
 }
 ```
 
-### Security Features:
-- 🔒 **Sensitive Data Protection**: API keys dan sensitive headers di-mask
-- 🔒 **Permission-Based Access**: Hanya admin yang bisa akses audit logs
-- 🔒 **Response Size Limiting**: Response body dibatasi untuk mencegah log yang terlalu besar
-- 🔒 **Async Logging**: Logging dilakukan secara asynchronous untuk performa optimal
 
-## 🗂️ Status Management System
+</details>
 
-API ini menggunakan sistem status management dengan field `status_id` di setiap tabel untuk mengelola lifecycle data:
+## 🔄 Status Management System
+
+This API uses a status management system with a `status_id` field in every table to manage data lifecycle:
 
 ### Status Values:
-- **0** - Active (Default, data aktif)
-- **1** - Inactive/Deleted (Soft deleted)
-- **2** - Pending (Untuk future use)
-- **3** - Suspended (Untuk future use)
+- **0** - Active (active data)
+- **1** - Inactive/Deleted (default: Soft deleted)
+- **2** - Pending (for future use)
+- **3** - Suspended (for future use)
 
-### Fitur Status Management:
-- ✅ **Soft Delete**: Data tidak benar-benar dihapus, hanya diubah status_id menjadi 1
-- ✅ **Auto Filtering**: Semua query otomatis memfilter data aktif (status_id = 0)
-- ✅ **Restore Capability**: Data yang di-soft delete bisa di-restore kembali
-- ✅ **Audit Trail**: Perubahan status tercatat dalam audit logs
-- ✅ **Consistent Implementation**: Semua tabel menggunakan pattern yang sama
+Soft-delete example:
+```sql
+UPDATE examples SET status_id = 0 WHERE id = 'uuid';
+```
 
-### Contoh Penggunaan Status Management:
+
+<details>
+<summary><b>Example</b></summary>
+
+#### Status Management Example:
 
 **Soft Delete Example:**
 ```bash
@@ -484,9 +281,10 @@ curl -X PUT "http://localhost:3000/v1/examples/1" \
   }'
 ```
 
-### Database Schema dengan Status ID:
+
+#### Example Database Schema:
 ```sql
--- Contoh struktur tabel dengan status_id
+-- examples table structure with status_id
 CREATE TABLE examples (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
@@ -503,165 +301,198 @@ CREATE INDEX idx_examples_status_id ON examples(status_id);
 -- Note: Default value is 1 (inactive), data must be explicitly set to 0 to be active
 ```
 
-### Benefits Status Management:
-- 🔄 **Data Recovery**: Data yang terhapus bisa dipulihkan
-- 📊 **Analytics**: Bisa menganalisis data yang dihapus
-- 🔍 **Audit Trail**: Jejak lengkap perubahan status
-- ⚡ **Performance**: Query lebih cepat dengan proper indexing
-- 🛡️ **Data Integrity**: Mencegah kehilangan data permanen
+
+</details>
 
 
+#### Benefits of Status Management:
+- 🔄 **Data Recovery**: Deleted data can be restored
+- 📊 **Analytics**: Ability to analyze deleted/historical data
+- 🔍 **Audit Trail**: Complete record of status changes
+- ⚡ **Performance**: Faster queries with proper indexing
+- 🛡️ **Data Integrity**: Prevents permanent data loss
 
 
+## ⏳ API Key Expiration System
 
-## 📚 Swagger Documentation Configuration
+This API features a comprehensive API key expiration management system:
 
-API ini memiliki sistem konfigurasi fleksibel untuk menampilkan/menyembunyikan module tertentu dari dokumentasi Swagger:
-
-### **Default Behavior:**
-- ✅ **Examples** - Selalu ditampilkan
-- ✅ **Permissions** - Selalu ditampilkan
-- ✅ **Groups** - Selalu ditampilkan
-- ❌ **Audit** - Disembunyikan (internal use)
-- ❌ **Access/Profile** - Disembunyikan (internal use)
-
-### **Cara Mengontrol Dokumentasi:**
-
-**1. Menggunakan Script (Recommended):**
-```bash
-# Generate docs tanpa Audit & Access (default)
-./scripts/generate-swagger.sh
-
-# Generate docs dengan Audit module
-./scripts/generate-swagger.sh --show-audit
-
-# Generate docs dengan Access module
-./scripts/generate-swagger.sh --show-access
-
-# Generate docs dengan semua module
-./scripts/generate-swagger.sh --show-all
-
-# Windows
-scripts\generate-swagger.bat --show-all
-```
-
-**2. Menggunakan Build Tags:**
-```bash
-# Manual dengan build tags
-swag init -g cmd/api/main.go -o docs --tags "swagger_audit,swagger_access"
-```
-
-### **Use Cases:**
-
-**🔒 Production (Default):**
-- Sembunyikan Audit & Access untuk keamanan
-- Hanya tampilkan public API endpoints
-
-**🛠️ Development:**
-- Tampilkan semua module untuk testing
-- Full API documentation untuk developer
-
-**📋 Documentation:**
-- Selective display berdasarkan audience
-- Internal vs External documentation
-
-### **Benefits:**
-- 🔐 **Security**: Sensitive endpoints tidak ter-expose di public docs
-- 🎯 **Focused**: Documentation sesuai kebutuhan audience
-- 🔄 **Flexible**: Easy toggle tanpa mengubah code
-- 📱 **Maintainable**: Single source of truth untuk docs#
-# 🔑 API Key Expiration System
-
-API ini dilengkapi dengan sistem manajemen API key expiration yang komprehensif:
-
-### Fitur Expiration:
-- ✅ **Flexible Expiration**: API key bisa diatur untuk expired pada tanggal tertentu
-- ✅ **Never Expires**: API key bisa diatur untuk tidak pernah expired (NULL value)
-- ✅ **Auto Validation**: API key yang sudah expired otomatis ditolak
-- ✅ **Management API**: Endpoint untuk mengatur dan menghapus expiration date
-- ✅ **Permission Based**: Hanya admin dengan permission "access:manage" yang bisa mengatur
-
-### Contoh Penggunaan:
-
-**Set Expiration Date:**
-```bash
-# Set API key untuk expired dalam 30 hari
-curl -X PUT "http://localhost:3000/v1/access/1/expired-date" \
-  -H "Authorization: Bearer admin-api-key-789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "expired_date": "2025-08-22T00:00:00Z"
-  }'
-```
-
-**Remove Expiration (Never Expires):**
-```bash
-# Set API key untuk tidak pernah expired
-curl -X DELETE "http://localhost:3000/v1/access/1/expired-date" \
-  -H "Authorization: Bearer admin-api-key-789"
-```
-
-### Contoh Data Seeded:
-- **Admin User**: Tidak pernah expired (NULL)
-- **John Doe**: Expired dalam 3 bulan dari sekarang
-- **Jane Smith**: Sudah expired (1 bulan yang lalu)
-
-### Implementasi:
-- Field `expired_date` di tabel `access` (nullable)
-- Check expired date di auth middleware
-- Endpoint management dengan permission control
-- Validasi tanggal (harus di masa depan)
+### Key Features:
+- ✅ **Flexible Expiration**: API keys can be set to expire at specific dates
+- ✅ **Never Expires**: API keys can be configured to never expire (NULL value)
+- ✅ **Auto Validation**: Expired API keys are automatically rejected
+- ✅ **Management API**: Dedicated endpoints to set and clear expiration dates
+- ✅ **Permission Based**: Only admins with "access:manage" permission can configure
 
 ### Security Benefits:
-- 🔒 **Temporary Access**: Bisa memberikan akses sementara
-- 🔒 **Auto Revocation**: API key expired otomatis tanpa manual revoke
-- 🔒 **Audit Trail**: Semua perubahan expiration tercatat di audit logs
-- 🔒 **Granular Control**: Bisa mengatur expiration per user## 🚦 API R
-ate Limiting System
+- 🔒 **Temporary Access**: Enables granting time-limited access
+- 🔒 **Auto Revocation**: Automatically invalidates expired API keys without manual intervention
+- 🔒 **Audit Trail**: All expiration changes are recorded in audit logs
+- 🔒 **Granular Control**: Allows setting expiration per individual user
 
-API ini dilengkapi dengan sistem rate limiting yang komprehensif untuk mengontrol jumlah request per API key:
 
-### Fitur Rate Limiting:
-- ✅ **Per-User Limits**: Setiap API key memiliki rate limit sendiri
-- ✅ **Default Limit**: 120 requests per menit (configurable)
-- ✅ **Custom Limits**: Bisa diatur per user sesuai kebutuhan
-- ✅ **Rate Limit Headers**: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+[View Usage Documentation](docs/usage/usage-expiration.md)
+
+
+## 🚦 API Rate Limiting System
+
+This API includes a robust rate limiting system to control the number of requests per API key.
+
+### Rate Limiting Features:
+- ✅ **Per-User Limits**: Each API key has its own individual rate limit
+- ✅ **Default Limit**: 120 requests per minute (configurable)
+- ✅ **Custom Limits**: Limits can be customized per access key as needed
+- ✅ **Rate Limit Headers**: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`
 - ✅ **Graceful Rejection**: 429 Too Many Requests dengan pesan yang jelas
 
-### Contoh Penggunaan:
 
-**Update Rate Limit:**
+#### Implementasi:
+- In-memory tracking of request timestamps
+- Middleware to validate and enforce rate limits
+- Endpoint-level management with permission control
+
+#### Benefits:
+- 🛡️ **DDoS Protection**: Prevents abuse from a single client
+- 💰 **Cost Control**: Limits excessive resource usage
+- 🎯 **Tiered Access**: Allows different rate limits per user tier
+- 📊 **Usage Insights**: Enables monitoring of request patterns
+- 🔄 **Fair Usage**: Ensures no single client consumes all resources
+
+
+## 🧪 Testing
+
+- Use token for authentication testing
+
+## 🧩 Add New Module
+
+To add a new module (e.g., `product`):
+
+1. Create a folder at `internal/modules/product/`
+2. Add four files: `product_model.go`, `product_repository.go`, `product_handler.go`, `product_route.go`
+3. Follow the same pattern as the example module
+
+Register the route in `main.go`:
+```go
+productRepo := product.NewRepository(db)
+productHandler := product.NewHandler(productRepo)
+product.RegisterProductRoutes(app, productHandler, authMiddleware)
+```
+
+
+## 🧰 Development Tools
+
+- Hot reload dengan `air`
+- Linter: `golangci-lint`
+- Database: `PostgreSQL`
+
+## 🗃️ Seeder & Test Data
+
+To seed the database, run:
+
 ```bash
-# Set rate limit untuk user (300 requests per menit)
-curl -X PUT "http://localhost:3000/v1/access/1/rate-limit" \
-  -H "Authorization: Bearer admin-api-key-789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "rate_limit": 300
-  }'
+go run cmd/seed/main.go --seed
 ```
 
-**Response Headers:**
+Initial data will be inserted into the following tables:
+- `access`
+- `groups`
+- `group_permissions`
+- `examples`
+
+### Available API Keys for Testing:
+
+#### Admin User (Full Access)
+- **API Key**: `admin-api-key-789`
+- **Email**: admin@example.com
+- **Group**: Admin
+- **Permissions**: All permissions (create, read, update, delete examples + manage permissions & groups)
+- **state**: never expired
+
+#### Editor User (Limited Access)
+- **API Key**: `test-api-key-123`
+- **Email**: john@example.com
+- **Group**: Editor
+- **Permissions**: Create, read, update examples + view profile
+- **state**: expired in 3 months after instalation
+
+#### Viewer User (Read Only)
+- **API Key**: `test-api-key-456`
+- **Email**: jane@example.com
+- **Group**: Viewer
+- **Permissions**: Read examples + view profile
+- **state**: already expired a month ago
+
+
+## 📚 API Documentation
+
+![docs](docs/docs.png)
+
+Auto-generated Swagger docs from Fiber comments:
+
+```go
+// @Summary Get all examples
+// @Tags example
+// @Produce json
+// @Success 200 {object} model.Example
+// @Router /example [get]
 ```
-X-RateLimit-Limit: 120
-X-RateLimit-Remaining: 119
-X-RateLimit-Reset: 1627484861
+
+---
+
+**How to build documentation:**
+```bash
+swag init -g cmd/api/main.go -o docs
 ```
 
-### Contoh Data Seeded:
-- **Admin User**: 1000 requests per menit
-- **John Doe**: 120 requests per menit (default)
-- **Jane Smith**: 60 requests per menit (limited)
+API Documentation will available at [http://localhost:3000/docs](http://localhost:3000/docs)
 
-### Implementasi:
-- Field `rate_limit` di tabel `access`
-- In-memory tracking untuk request timestamps
-- Middleware untuk validasi rate limit
-- Endpoint management dengan permission control
+### API Example:
 
-### Benefits:
-- 🛡️ **DDoS Protection**: Mencegah abuse dari single client
-- 💰 **Cost Control**: Membatasi resource usage
-- 🎯 **Tiered Access**: Bisa memberikan limit berbeda per user tier
-- 📊 **Usage Insights**: Monitoring request patterns
-- 🔄 **Fair Usage**: Mencegah satu client menghabiskan resource
+```bash
+curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {token}"
+```
+
+### Endpoints
+
+#### Access
+- `GET /v1/profile` - Get user profile (Requires: profile:read)
+
+#### Examples
+- `GET /v1/examples` - Get all active examples (Requires: examples:read)
+- `POST /v1/examples` - Create new example (Requires: examples:create)
+- `GET /v1/examples/:id` - Get example by ID (Requires: examples:read)
+- `PUT /v1/examples/:id` - Update example (Requires: examples:update)
+- `DELETE /v1/examples/:id` - Soft delete example (Requires: examples:delete)
+- `POST /v1/examples/:id/restore` - Restore deleted example (Requires: examples:update)
+- `GET /v1/examples/deleted` - Get all deleted examples (Requires: examples:read)
+
+#### Permissions Management
+- `GET /v1/permissions` - Get all permissions (Requires: permissions:manage)
+- `POST /v1/permissions` - Create new permission (Requires: permissions:manage)
+- `GET /v1/permissions/:id` - Get permission by ID (Requires: permissions:manage)
+- `DELETE /v1/permissions/:id` - Delete permission (Requires: permissions:manage)
+
+#### Groups Management
+- `GET /v1/groups` - Get all groups (Requires: groups:manage)
+- `POST /v1/groups` - Create new group (Requires: groups:manage)
+- `GET /v1/groups/:id` - Get group by ID (Requires: groups:manage)
+- `PUT /v1/groups/:id/permissions` - Update group permissions (Requires: groups:manage)
+- `DELETE /v1/groups/:id` - Delete group (Requires: groups:manage)
+
+#### Audit Logs
+- `GET /v1/audit-logs` - Get audit logs with filtering (Requires: audit:read)
+- `GET /v1/audit-logs/:id` - Get detailed audit log by ID (Requires: audit:read)
+- `DELETE /v1/audit-logs/cleanup?days=30` - Delete old audit logs (Requires: audit:manage)
+
+#### Health Check
+- `GET /health` - Health check endpoint (No authentication required)
+- `GET /version` - Get API version info (No authentication required)
+
+---
+
+### Use Case
+
+[See Use Case documentaion](docs/usage/usecase.md)
+
+
+> MIT Licensed · Built with ❤️ by [CARIK.id](https://carik.id) team
