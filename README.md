@@ -149,12 +149,83 @@ go install github.com/swaggo/swag/cmd/swag@latest
 
 ## 📈 Audit Logging System
 
-Log detail:
-- User ID
-- Endpoint + Method
-- Status Code
-- Duration & Response
-- Saved to PostgreSQL
+API ini dilengkapi dengan sistem audit logging yang komprehensif untuk mencatat semua aktivitas API:
+
+- ✅ **Automatic Logging**: Semua request/response dicatat otomatis
+- ✅ **Request Details**: Method, path, headers, body payload
+- ✅ **Response Details**: Status code, response body, response time
+- ✅ **User Tracking**: User ID, email, dan API key (masked)
+- ✅ **IP & User Agent**: Tracking untuk security analysis
+- ✅ **Filtering & Search**: Filter berdasarkan user, method, path, status, tanggal
+- ✅ **Pagination**: Support untuk large datasets
+- ✅ **Cleanup**: Auto-delete old logs untuk maintenance
+
+<details>
+<summary><b>Usage</b></summary>
+
+**Get Audit Logs (Admin only):**
+
+```bash
+# Get all audit logs
+curl -X GET "http://localhost:3000/v1/audit-logs" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+# Filter by user email
+curl -X GET "http://localhost:3000/v1/audit-logs?user_email=john@example.com" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+# Filter by method and status code
+curl -X GET "http://localhost:3000/v1/audit-logs?method=POST&status_code=201" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+# Filter by date range
+curl -X GET "http://localhost:3000/v1/audit-logs?date_from=2024-01-01&date_to=2024-01-31" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+# With pagination
+curl -X GET "http://localhost:3000/v1/audit-logs?limit=10&offset=20" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+**Get Detailed Audit Log:**
+
+```bash
+# Get specific audit log with full request/response details
+curl -X GET "http://localhost:3000/v1/audit-logs/123" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+**Cleanup Old Logs (Admin only):**
+
+```bash
+# Delete logs older than 30 days
+curl -X DELETE "http://localhost:3000/v1/audit-logs/cleanup?days=30" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+
+#### Audit Log Data Structure:
+```json
+{
+  "id": 123,
+  "user_id": 1,
+  "user_email": "john@example.com",
+  "api_key": "test-api****", // Masked for security
+  "method": "POST",
+  "path": "/v1/examples",
+  "status_code": 201,
+  "request_headers": "{\"Content-Type\":\"application/json\"}",
+  "request_body": "{\"name\":\"Test\",\"description\":\"Test example\"}",
+  "response_body": "{\"status\":\"success\",\"data\":{...}}",
+  "response_time": 45, // milliseconds
+  "ip_address": "192.168.1.100",
+  "user_agent": "curl/7.68.0",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+
+</details>
 
 ## 🔄 Status Management System
 
@@ -210,19 +281,19 @@ product.RegisterProductRoutes(app, productHandler, authMiddleware)
 
 ## 🗃️ Seeder & Test Data
 
-Run:
+To seed the database, run:
 
 ```bash
 go run cmd/seed/main.go --seed
 ```
 
-Data awal akan disimpan ke:
+Initial data will be inserted into the following tables:
 - `access`
 - `groups`
 - `group_permissions`
 - `examples`
 
-### API Keys yang Tersedia untuk Testing:
+### Available API Keys for Testing:
 
 #### Admin User (Full Access)
 - **API Key**: `admin-api-key-789`
