@@ -1,8 +1,24 @@
-# My API - Modular REST API with Go Fiber
+# Modular REST API with Go
 
-REST API yang dibangun dengan Go Fiber menggunakan arsitektur modular yang sangat scalable. Setiap modul bersifat self-contained dan dapat ditambahkan dengan mudah tanpa mengubah kode yang sudah ada.
+REST API yang dibangun dengan Go menggunakan arsitektur modular yang sangat scalable. Setiap modul bersifat self-contained dan dapat ditambahkan dengan mudah tanpa mengubah kode yang sudah ada.
 
-## Struktur Proyek
+## Fitur Utama
+
+- ✅ **Modular Architecture**: Feature-based structure
+- ✅ **Authentication**: Bearer token middleware
+- ✅ **Database**: PostgreSQL dengan GORM
+- ✅ **Documentation**: Auto-generated Swagger docs
+- ✅ **Configuration**: Environment variables dengan .env
+- ✅ **Error Handling**: Centralized error handling
+- ✅ **CORS**: Cross-origin resource sharing
+- ✅ **Logging**: Request logging middleware
+- ✅ **Health Check**: Basic health check endpoint
+- ✅ **Expiration System**: Penetapan masa berlaku token/key.
+- ✅ **Rate Limit**:  Membatasi jumlah permintaan (requests)
+
+
+<details>
+<summary><b>Struktur Proyek</b></summary>
 
 ```
 apiserver/
@@ -51,6 +67,7 @@ apiserver/
 ├── go.sum
 └── README.md
 ```
+</details>
 
 ## Mengapa Struktur Ini Modular?
 
@@ -66,7 +83,7 @@ apiserver/
 
 ## Prerequisites
 
-- Go 1.21+
+- Go 1.24+
 - PostgreSQL
 - Swaggo CLI untuk generate dokumentasi
 
@@ -75,7 +92,7 @@ Install Swaggo:
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
-## Setup dan Menjalankan
+## Setup & Running
 
 1. **Clone dan setup dependencies:**
 ```bash
@@ -109,6 +126,8 @@ Server akan berjalan di `http://localhost:3000`
 ## API Documentation
 
 Dokumentasi Swagger tersedia di: `http://localhost:3000/docs`
+
+![docs](docs/docs.png)
 
 ## Endpoints
 
@@ -296,18 +315,6 @@ productRepo := product.NewRepository(db)
 productHandler := product.NewHandler(productRepo)
 product.RegisterProductRoutes(app, productHandler, authMiddleware)
 ```
-
-## Fitur Utama
-
-- ✅ **Modular Architecture**: Feature-based structure
-- ✅ **Authentication**: Bearer token middleware
-- ✅ **Database**: PostgreSQL dengan GORM
-- ✅ **Documentation**: Auto-generated Swagger docs
-- ✅ **Configuration**: Environment variables dengan .env
-- ✅ **Error Handling**: Centralized error handling
-- ✅ **CORS**: Cross-origin resource sharing
-- ✅ **Logging**: Request logging middleware
-- ✅ **Health Check**: Basic health check endpoint
 
 ## Development
 
@@ -557,17 +564,7 @@ API ini memiliki sistem konfigurasi fleksibel untuk menampilkan/menyembunyikan m
 scripts\generate-swagger.bat --show-all
 ```
 
-**2. Menggunakan Environment Variables:**
-```bash
-# Set di .env file
-SHOW_AUDIT_IN_SWAGGER=true
-SHOW_ACCESS_IN_SWAGGER=true
-
-# Atau set saat runtime
-SHOW_AUDIT_IN_SWAGGER=true swag init -g cmd/api/main.go -o docs
-```
-
-**3. Menggunakan Build Tags:**
+**2. Menggunakan Build Tags:**
 ```bash
 # Manual dengan build tags
 swag init -g cmd/api/main.go -o docs --tags "swagger_audit,swagger_access"
