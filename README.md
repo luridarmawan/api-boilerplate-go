@@ -229,14 +229,61 @@ curl -X DELETE "http://localhost:3000/v1/audit-logs/cleanup?days=30" \
 
 ## 🔄 Status Management System
 
-Gunakan `status_id`:
-- `1`: Active (default)
-- `0`: Deleted (soft delete)
+This API uses a status management system with a `status_id` field in every table to manage data lifecycle:
+
+### Status Values:
+- **0** - Active (active data)
+- **1** - Inactive/Deleted (default: Soft deleted)
+- **2** - Pending (for future use)
+- **3** - Suspended (for future use)
+
 
 Contoh soft-delete:
 ```sql
 UPDATE examples SET status_id = 0 WHERE id = 'uuid';
 ```
+
+
+<details>
+<summary><b>Example</b></summary>
+
+#### Status Management Example:
+
+**Soft Delete Example:**
+```bash
+# Soft delete example (set status_id = 1)
+curl -X DELETE "http://localhost:3000/v1/examples/1" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+**Restore Example:**
+```bash
+# Restore deleted example (set status_id = 0)
+curl -X POST "http://localhost:3000/v1/examples/1/restore" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+**Get Deleted Examples:**
+```bash
+# View all soft deleted examples
+curl -X GET "http://localhost:3000/v1/examples/deleted" \
+  -H "Authorization: Bearer admin-api-key-789"
+```
+
+**Update Example:**
+```bash
+# Update existing example
+curl -X PUT "http://localhost:3000/v1/examples/1" \
+  -H "Authorization: Bearer test-api-key-123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Example",
+    "description": "This example has been updated"
+  }'
+```
+
+</details>
+
 
 ## ⏳ API Key Expiration System
 
