@@ -282,17 +282,58 @@ curl -X PUT "http://localhost:3000/v1/examples/1" \
   }'
 ```
 
+
+#### Example Database Schema:
+```sql
+-- examples table structure with status_id
+CREATE TABLE examples (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP NULL,
+    status_id SMALLINT NOT NULL DEFAULT 1
+);
+
+-- Index untuk performa query
+CREATE INDEX idx_examples_status_id ON examples(status_id);
+
+-- Note: Default value is 1 (inactive), data must be explicitly set to 0 to be active
+```
+
+
 </details>
+
+
+#### Benefits of Status Management:
+- 🔄 **Data Recovery**: Deleted data can be restored
+- 📊 **Analytics**: Ability to analyze deleted/historical data
+- 🔍 **Audit Trail**: Complete record of status changes
+- ⚡ **Performance**: Faster queries with proper indexing
+- 🛡️ **Data Integrity**: Prevents permanent data loss
 
 
 ## ⏳ API Key Expiration System
 
-Tambahkan `token_expired_at` di table `users`. Token akan ditolak jika waktu sekarang melewati tanggal expired.
+This API features a comprehensive API key expiration management system:
 
-Contoh:
-```sql
-UPDATE users SET token_expired_at = NOW() + INTERVAL '2 days';
-```
+### Key Features:
+- ✅ **Flexible Expiration**: API keys can be set to expire at specific dates
+- ✅ **Never Expires**: API keys can be configured to never expire (NULL value)
+- ✅ **Auto Validation**: Expired API keys are automatically rejected
+- ✅ **Management API**: Dedicated endpoints to set and clear expiration dates
+- ✅ **Permission Based**: Only admins with "access:manage" permission can configure
+
+### Security Benefits:
+- 🔒 **Temporary Access**: Enables granting time-limited access
+- 🔒 **Auto Revocation**: Automatically invalidates expired API keys without manual intervention
+- 🔒 **Audit Trail**: All expiration changes are recorded in audit logs
+- 🔒 **Granular Control**: Allows setting expiration per individual user
+
+
+[View Usage Documentation](docs/usage/usage-expiration.md)
+
 
 ## 🚦 API Rate Limiting System
 
@@ -347,18 +388,21 @@ Initial data will be inserted into the following tables:
 - **Email**: admin@example.com
 - **Group**: Admin
 - **Permissions**: All permissions (create, read, update, delete examples + manage permissions & groups)
+- **state**: never expired
 
 #### Editor User (Limited Access)
 - **API Key**: `test-api-key-123`
 - **Email**: john@example.com
 - **Group**: Editor
 - **Permissions**: Create, read, update examples + view profile
+- **state**: expired in 3 months after instalation
 
 #### Viewer User (Read Only)
 - **API Key**: `test-api-key-456`
 - **Email**: jane@example.com
 - **Group**: Viewer
 - **Permissions**: Read examples + view profile
+- **state**: already expired a month ago
 
 
 ## 📚 API Documentation
@@ -428,7 +472,7 @@ curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {toke
 
 ### Use Case
 
-[See Use Case documentaion](usecase.md)
+[See Use Case documentaion](docs/usage/usecase.md)
 
 
 > MIT Licensed · Built with ❤️ by [CARIK.id](https://carik.id) team
