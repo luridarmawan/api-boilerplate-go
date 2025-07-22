@@ -11,7 +11,7 @@ REST API yang dibangun dengan Go menggunakan arsitektur modular yang sangat scal
 - ✅ **Configuration**: Environment variables dengan .env
 - ✅ **Error Handling**: Centralized error handling
 - ✅ **CORS**: Cross-origin resource sharing
-- ✅ **Logging**: Request logging middleware
+- ✅ **Audit Logging System**: Request logging middleware
 - ✅ **Health Check**: Basic health check endpoint
 - ✅ **Expiration System**: Penetapan masa berlaku token/key.
 - ✅ **Rate Limit**:  Membatasi jumlah permintaan (requests)
@@ -96,7 +96,7 @@ go install github.com/swaggo/swag/cmd/swag@latest
 
 1. **Clone dan setup dependencies:**
 ```bash
-git clone <repository>
+git clone https://github.com/luridarmawan/api-boilerplate-with-golang.git apiserver
 cd apiserver
 go mod tidy
 ```
@@ -168,12 +168,8 @@ Dokumentasi Swagger tersedia di: `http://localhost:3000/docs`
 ## Contoh Penggunaan
 
 ### 1. Setup Test Data
-Pertama, insert user dengan API key ke database:
 
-```sql
-INSERT INTO access (name, email, api_key, created_at, updated_at) 
-VALUES ('John Doe', 'john@example.com', 'test-api-key-123', NOW(), NOW());
-```
+[Lihat bagian seeder](#init)
 
 ### 2. Test Endpoints dengan cURL
 
@@ -330,26 +326,11 @@ air
 
 Menambahkan data test:
 
-
-
-
-### Opsi #1
+### Seeder
 
 Melalui seeder:
 ```bash
 go run cmd/api/main.go -seed
-```
-
-### Opsi #2
-
-Setelah server berjalan dan tabel ter-migrate, jalankan query SQL ini di PostgreSQL:
-
-```sql
-INSERT INTO access (name, email, api_key, created_at, updated_at)
-VALUES
-  ('John Doe', 'john@example.com', 'test-api-key-123', NOW(), NOW()),
-  ('Jane Smith', 'jane@example.com', 'test-api-key-456', NOW(), NOW()),
-  ('Admin User', 'admin@example.com', 'admin-api-key-789', NOW(), NOW());
 ```
 
 ## API Keys yang Tersedia untuk Testing:
