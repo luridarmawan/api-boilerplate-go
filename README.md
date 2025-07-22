@@ -1,6 +1,6 @@
 # 🧩 REST API Modular Boilerplate (Go)
 
-![Go Version](https://img.shields.io/badge/go-1.22+-blue)
+![Go Version](https://img.shields.io/badge/go-1.24+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Build](https://img.shields.io/badge/build-passing-success)
@@ -12,7 +12,6 @@
 - [🚀 Quickstart](#-quickstart)
 - [📂 Project Structure](#-project-structure)
 - [🧱 Architecture](#-architecture)
-- [📖 API Reference](#-api-reference)
 - [🛡️ Security & Auth](#-security--auth)
 - [📈 Audit Logging System](#-audit-logging-system)
 - [🔄 Status Management System](#-status-management-system)
@@ -22,22 +21,23 @@
 - [🧩 Add New Module](#-add-new-module)
 - [🧰 Development Tools](#-development-tools)
 - [🗃️ Seeder & Test Data](#-seeder--test-data)
-- [📚 Swagger & Docs](#-swagger--docs)
+- [📖 API Documentation](#-api-documentation)
 
 ## 🧩 Features
 
 - ✅ **Modular Architecture**: Feature-based directory structure
 - ✅ **Authentication System**: Bearer token with expiration & rate limiting
 - ✅ **Database Layer**: PostgreSQL with GORM
-- ✅ **RBAC**: Role & permission based access
-- ✅ **Documentation**: Auto-generated Swagger docs
-- ✅ **Configuration**: Environment variables with `.env`
-- ✅ **Error Handling**: Centralized error handler
-- ✅ **Audit Log**: Request/response logger by user
-- ✅ **Status Management**: Logical delete via `status_id`
-- ✅ **Seeder & Sample Data**: Default sample data
-- ✅ **Expiration System**: Penetapan masa berlaku token/key.
-- ✅ **Rate Limit**:  Membatasi jumlah permintaan (requests)
+- ✅ **RBAC**: Role-based access control with permission mapping
+- ✅ **Documentation**: Auto-generated Swagger documentation
+- ✅ **Configuration**: Environment-based setup using `.env`
+- ✅ **Error Handling**: Centralized and consistent error responses
+- ✅ **Audit Log**: Tracks user requests and responses
+- ✅ **Status Management**: Soft deletion using `status_id`
+- ✅ **Seeder & Sample Data**: Default test data for quick setup
+- ✅ **Health Check**: Built-in endpoint to check server status
+- ✅ **Expiration System**: Supports token/key expiration policy
+- ✅ **Rate Limit**:  Controls number of requests per user/IP
 
 ## 🚀 Quickstart
 
@@ -107,16 +107,28 @@ apiserver/
 
 ## 🧱 Architecture
 
-Setiap modul memiliki:
+Each module includes:
 
-- `model.go`: Schema dan validasi
-- `repository.go`: Query builder (GORM)
-- `handler.go`: Logic utama API
-- `route.go`: Router module (Fiber)
+- `model.go`: Defines schema and data validation
+- `repository.go`: Contains GORM-based query logic
+- `handler.go`: Implements the core API logic
+- `route.go`: Registers routes using Fiber
 
 ```
 client → route → handler → repository → db
 ```
+
+## Why a Modular Structure?
+
+1. **Feature-Based Structure**: Each feature (e.g., `access`, `permission`, `group`, `example`) resides in its own folder containing all required components.
+2. **Self-Contained**: Every module is independent and includes its own model, repository, handler, and route, making it easy to maintain and scale.
+3. **Dependency Injection**: Repositories and handlers are initialized in `main.go` and injected into modules, ensuring loose coupling and better testability.
+4. **Interface-Based**: Repositories are defined via interfaces, allowing for easier testing and implementation swapping
+5. **RBAC System**: Role-Based Access Control is built-in and integrated with permission middleware for fine-grained access control
+6. **Easy Scaling**: Adding a new module is straightforward:
+   - Create a new folder under `internal/modules/`
+   - Add four files: `model.go`, `repository.go`, `handler.go`, `route.go`
+   - Register the route in `main.go` and attach appropriate permission middleware
 
 ## Prerequisites
 
@@ -127,15 +139,6 @@ client → route → handler → repository → db
 Install Swaggo:
 ```bash
 go install github.com/swaggo/swag/cmd/swag@latest
-```
-
-## 📖 API Reference
-
-- Swagger: [http://localhost:3000/docs/](http://localhost:3000/docs/)
-- Contoh API:
-
-```bash
-curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {token}"
 ```
 
 ## 🛡️ Security & Auth
@@ -209,9 +212,9 @@ Data awal akan disimpan ke:
 - `group_permissions`
 - `examples`
 
-## 📚 Swagger & Docs
+## 📚 API Documentation with Swagger
 
-Swagger doc otomatis dari comment Fiber:
+Auto-generated Swagger docs from Fiber comments:
 
 ```go
 // @Summary Get all examples
@@ -223,10 +226,17 @@ Swagger doc otomatis dari comment Fiber:
 
 ---
 
-
 **How to build documentation:**
 ```bash
 swag init -g cmd/api/main.go -o docs
+```
+
+API Documentation will available at [http://localhost:3000/docs](http://localhost:3000/docs)
+
+- API Example:
+
+```bash
+curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {token}"
 ```
 
 
