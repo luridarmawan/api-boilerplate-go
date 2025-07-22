@@ -188,9 +188,19 @@ Gunakan middleware `ratelimit` untuk membatasi:
 
 ## 🧩 Add New Module
 
-1. Duplikat folder `example/` di `internal/modules/`
-2. Ganti nama file & isi sesuai kebutuhan
-3. Tambahkan router di `router/route.go`
+To add a new module (e.g., `product`):
+
+1. Create a folder at `internal/modules/product/`
+2. Add four files: `product_model.go`, `product_repository.go`, `product_handler.go`, `product_route.go`
+3. Follow the same pattern as the example module
+
+Register the route in `main.go`:
+```go
+productRepo := product.NewRepository(db)
+productHandler := product.NewHandler(productRepo)
+product.RegisterProductRoutes(app, productHandler, authMiddleware)
+```
+
 
 ## 🧰 Development Tools
 
@@ -200,10 +210,10 @@ Gunakan middleware `ratelimit` untuk membatasi:
 
 ## 🗃️ Seeder & Test Data
 
-Jalankan:
+Run:
 
 ```bash
-go run cmd/seed/main.go
+go run cmd/seed/main.go --seed
 ```
 
 Data awal akan disimpan ke:
@@ -211,6 +221,27 @@ Data awal akan disimpan ke:
 - `groups`
 - `group_permissions`
 - `examples`
+
+### API Keys yang Tersedia untuk Testing:
+
+#### Admin User (Full Access)
+- **API Key**: `admin-api-key-789`
+- **Email**: admin@example.com
+- **Group**: Admin
+- **Permissions**: All permissions (create, read, update, delete examples + manage permissions & groups)
+
+#### Editor User (Limited Access)
+- **API Key**: `test-api-key-123`
+- **Email**: john@example.com
+- **Group**: Editor
+- **Permissions**: Create, read, update examples + view profile
+
+#### Viewer User (Read Only)
+- **API Key**: `test-api-key-456`
+- **Email**: jane@example.com
+- **Group**: Viewer
+- **Permissions**: Read examples + view profile
+
 
 ## 📚 API Documentation
 
@@ -233,11 +264,53 @@ swag init -g cmd/api/main.go -o docs
 
 API Documentation will available at [http://localhost:3000/docs](http://localhost:3000/docs)
 
-- API Example:
+### API Example:
 
 ```bash
 curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {token}"
 ```
+
+### Endpoints
+
+#### Access
+- `GET /v1/profile` - Get user profile (Requires: profile:read)
+
+#### Examples
+- `GET /v1/examples` - Get all active examples (Requires: examples:read)
+- `POST /v1/examples` - Create new example (Requires: examples:create)
+- `GET /v1/examples/:id` - Get example by ID (Requires: examples:read)
+- `PUT /v1/examples/:id` - Update example (Requires: examples:update)
+- `DELETE /v1/examples/:id` - Soft delete example (Requires: examples:delete)
+- `POST /v1/examples/:id/restore` - Restore deleted example (Requires: examples:update)
+- `GET /v1/examples/deleted` - Get all deleted examples (Requires: examples:read)
+
+#### Permissions Management
+- `GET /v1/permissions` - Get all permissions (Requires: permissions:manage)
+- `POST /v1/permissions` - Create new permission (Requires: permissions:manage)
+- `GET /v1/permissions/:id` - Get permission by ID (Requires: permissions:manage)
+- `DELETE /v1/permissions/:id` - Delete permission (Requires: permissions:manage)
+
+#### Groups Management
+- `GET /v1/groups` - Get all groups (Requires: groups:manage)
+- `POST /v1/groups` - Create new group (Requires: groups:manage)
+- `GET /v1/groups/:id` - Get group by ID (Requires: groups:manage)
+- `PUT /v1/groups/:id/permissions` - Update group permissions (Requires: groups:manage)
+- `DELETE /v1/groups/:id` - Delete group (Requires: groups:manage)
+
+#### Audit Logs
+- `GET /v1/audit-logs` - Get audit logs with filtering (Requires: audit:read)
+- `GET /v1/audit-logs/:id` - Get detailed audit log by ID (Requires: audit:read)
+- `DELETE /v1/audit-logs/cleanup?days=30` - Delete old audit logs (Requires: audit:manage)
+
+#### Health Check
+- `GET /health` - Health check endpoint (No authentication required)
+- `GET /version` - Get API version info (No authentication required)
+
+---
+
+### Use Case
+
+[See Use Case documentaion](usecase.md)
 
 
 > MIT Licensed · Built with ❤️ by [CARIK.id](https://carik.id) team
