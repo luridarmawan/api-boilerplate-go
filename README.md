@@ -149,16 +149,16 @@ go install github.com/swaggo/swag/cmd/swag@latest
 
 ## 📈 Audit Logging System
 
-API ini dilengkapi dengan sistem audit logging yang komprehensif untuk mencatat semua aktivitas API:
+This API includes a comprehensive audit logging system to record all API activities:
 
-- ✅ **Automatic Logging**: Semua request/response dicatat otomatis
-- ✅ **Request Details**: Method, path, headers, body payload
-- ✅ **Response Details**: Status code, response body, response time
-- ✅ **User Tracking**: User ID, email, dan API key (masked)
-- ✅ **IP & User Agent**: Tracking untuk security analysis
-- ✅ **Filtering & Search**: Filter berdasarkan user, method, path, status, tanggal
-- ✅ **Pagination**: Support untuk large datasets
-- ✅ **Cleanup**: Auto-delete old logs untuk maintenance
+- ✅ **Automatic Logging**: All requests and responses are logged automatically
+- ✅ **Request Details**: Method, path, headers, and body payload
+- ✅ **Response Details**: Status code, response body, and response time
+- ✅ **User Tracking**: User ID, email, and masked API key
+- ✅ **IP & User Agent**: Logged for security analysis
+- ✅ **Filtering & Search**: Filter by user, method, path, status, and date
+- ✅ **Pagination**: Supports large datasets with pagination
+- ✅ **Cleanup**: Automatically deletes old logs for maintenance
 
 <details>
 <summary><b>Usage</b></summary>
@@ -237,8 +237,7 @@ This API uses a status management system with a `status_id` field in every table
 - **2** - Pending (for future use)
 - **3** - Suspended (for future use)
 
-
-Contoh soft-delete:
+Soft-delete example:
 ```sql
 UPDATE examples SET status_id = 0 WHERE id = 'uuid';
 ```
