@@ -27,17 +27,17 @@
 
 - ✅ **Modular Architecture**: Feature-based directory structure
 - ✅ **Authentication System**: Bearer token with expiration & rate limiting
+- ✅ **Expiration System**: Supports token/key expiration policy
+- ✅ **Rate Limit**:  Controls number of requests per user/IP
+- ✅ **Audit Log**: Tracks user requests and responses
 - ✅ **Database Layer**: PostgreSQL with GORM
 - ✅ **RBAC**: Role-based access control with permission mapping
 - ✅ **Documentation**: Auto-generated Swagger documentation
 - ✅ **Configuration**: Environment-based setup using `.env`
 - ✅ **Error Handling**: Centralized and consistent error responses
-- ✅ **Audit Log**: Tracks user requests and responses
 - ✅ **Status Management**: Soft deletion using `status_id`
 - ✅ **Seeder & Sample Data**: Default test data for quick setup
 - ✅ **Health Check**: Built-in endpoint to check server status
-- ✅ **Expiration System**: Supports token/key expiration policy
-- ✅ **Rate Limit**:  Controls number of requests per user/IP
 
 ## 🚀 Quickstart
 
