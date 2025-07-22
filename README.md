@@ -20,7 +20,7 @@
 - [🧪 Testing](#-testing)
 - [🧩 Add New Module](#-add-new-module)
 - [🧰 Development Tools](#-development-tools)
-- [🗃️ Seeder & Test Data](#-seeder--test-data)
+- [🗃️ Seeder & Test Data](#%EF%B8%8F-seeder--test-data)
 - [📖 API Documentation](#-api-documentation)
 
 ## 🧩 Features
@@ -212,7 +212,7 @@ Data awal akan disimpan ke:
 - `group_permissions`
 - `examples`
 
-## 📚 API Documentation with Swagger
+## 📚 API Documentation
 
 Auto-generated Swagger docs from Fiber comments:
 
