@@ -1,43 +1,48 @@
 # Module Generator Tool
 
-This tool automatically generates a new module with all the required files following the project's standard structure.
+This tool automatically generates a new module with all the required files following the project's standard structure. It can also optionally generate permission scripts and test files.
 
 ## Usage
 
 ### Windows
 
 ```bash
-tools\generate-module.bat <module-name>
+tools\generate-module.bat <module-name> [--with-permissions]
 ```
 
-Example:
+Examples:
 ```bash
 tools\generate-module.bat product
+tools\generate-module.bat product --with-permissions
 ```
 
 ### Linux/Mac
 
 ```bash
-./tools/generate-module.sh <module-name>
+./tools/generate-module.sh <module-name> [--with-permissions]
 ```
 
-Example:
+Examples:
 ```bash
 ./tools/generate-module.sh product
+./tools/generate-module.sh product --with-permissions
 ```
 
 ### Direct Go Command
 
 ```bash
-go run tools/module-generator/main.go <module-name>
+go run tools/module-generator/main.go <module-name> [--with-permissions]
 ```
 
-Example:
+Examples:
 ```bash
 go run tools/module-generator/main.go product
+go run tools/module-generator/main.go product --with-permissions
 ```
 
 ## What It Does
+
+### Basic Module Generation
 
 The tool will:
 
@@ -48,6 +53,22 @@ The tool will:
    - `<module-name>_handler.go`
    - `<module-name>_route.go`
 3. Provide instructions for updating `main.go` to register the new module
+
+### With Permissions Flag (`--with-permissions`)
+
+When using the `--with-permissions` flag, the tool will additionally:
+
+1. Create permission scripts:
+   - `scripts/add-<module-name>-permissions.go` (Go script)
+   - `scripts/add-<module-name>-permissions.sql` (SQL script)
+2. Create test file:
+   - `test/<module-name>-api-test.http` (HTTP test requests)
+3. Generate permissions for CRUD operations (create, read, update, delete)
+4. Assign permissions to appropriate groups:
+   - **Admin**: All permissions (create, read, update, delete)
+   - **Editor**: create, read, update permissions
+   - **Viewer**: read permission only
+   - **General client**: read permission only
 
 ## Generated Files
 
@@ -97,6 +118,24 @@ After generating the module, you need to:
    <module-name>Handler := <module-name>.NewHandler(<module-name>Repo)
    <module-name>.Register<ModuleName>Routes(app, <module-name>Handler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
    ```
+
+### If Generated With Permissions
+
+If you used the `--with-permissions` flag:
+
+3. Run the permission script to add permissions to the database:
+   ```bash
+   go run scripts/add-<module-name>-permissions.go
+   ```
+   
+   Or use the SQL script:
+   ```bash
+   psql -d your_database_name -f scripts/add-<module-name>-permissions.sql
+   ```
+
+4. Test the API endpoints using the generated test file:
+   - Open `test/<module-name>-api-test.http` in VS Code with REST Client extension
+   - Or use the requests as examples for your preferred HTTP client
 
 ## Customization
 
