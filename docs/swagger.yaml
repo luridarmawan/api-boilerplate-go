@@ -158,7 +158,6 @@ definitions:
       status_id:
         type: integer
     type: object
-host: localhost:3000
 info:
   contact:
     name: API Support
