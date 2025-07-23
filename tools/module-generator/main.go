@@ -834,7 +834,8 @@ func main() {
 	if withPermissions {
 		fmt.Println("\n🔐 Permission script created!")
 		fmt.Printf("Run the following command to add permissions for %s module:\n", moduleName)
-		fmt.Printf("go run scripts/add-%s-permissions.go\n", moduleName)
+		fmt.Println("# go run cmd/api/main.go --seed");
+		fmt.Printf("# go run scripts/add-%s-permissions.go\n", moduleName)
 	} else {
 		fmt.Println("\n💡 Tip: Use --with-permissions flag to automatically generate permission script")
 		fmt.Printf("Example: go run tools/module-generator/main.go %s --with-permissions\n", moduleName)
