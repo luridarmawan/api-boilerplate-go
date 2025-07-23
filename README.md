@@ -394,23 +394,12 @@ product.RegisterProductRoutes(app, productHandler, authMiddleware)
 ```bash
 # Complete documentation
 swag init -g cmd/api/main.go -o docs
-
-# Public documentation (filtered)
-./scripts/generate-public-docs.sh
 ```
 
 #### Filter Endpoints
-```bash
-# Remove internal endpoints
-./scripts/filter-swagger.sh "Access,Permission"
 
-# Custom filtering
-./scripts/filter-swagger.sh "TagName1,TagName2" "input.json" "output.json"
-```
 
 #### Available Scripts
-- `scripts/generate-public-docs.sh` - Generate public API documentation
-- `scripts/filter-swagger.sh` - Filter endpoints by tags
 - `scripts/build.sh` - Build application for different environments
 
 ## 🗃️ Seeder & Test Data
