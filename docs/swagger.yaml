@@ -24,7 +24,7 @@ definitions:
       group_id:
         type: integer
       id:
-        type: integer
+        type: string
       name:
         type: string
       rate_limit:
@@ -35,12 +35,14 @@ definitions:
     type: object
   audit.AuditLog:
     properties:
+      access_id:
+        type: string
       api_key:
         type: string
       created_at:
         type: string
       id:
-        type: integer
+        type: string
       ip_address:
         type: string
       method:
@@ -64,8 +66,6 @@ definitions:
         type: string
       user_email:
         type: string
-      user_id:
-        type: integer
     type: object
   example.CreateExampleRequest:
     properties:
@@ -83,7 +83,7 @@ definitions:
       description:
         type: string
       id:
-        type: integer
+        type: string
       name:
         type: string
       status_id:
@@ -176,7 +176,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -223,7 +223,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Expiration date data
         in: body
         name: data
@@ -277,7 +277,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Rate limit data
         in: body
         name: data
@@ -327,6 +327,10 @@ paths:
       - application/json
       description: Get audit logs with filtering and pagination
       parameters:
+      - description: Filter by access ID (UUID)
+        in: query
+        name: access_id
+        type: string
       - description: Filter by user email
         in: query
         name: user_email
@@ -394,7 +398,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -556,7 +560,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -604,7 +608,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -650,7 +654,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Example data
         in: body
         name: example
@@ -703,7 +707,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
