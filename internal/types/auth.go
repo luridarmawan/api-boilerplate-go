@@ -4,7 +4,7 @@ import "apiserver/internal/modules/group"
 
 // User interface untuk menghindari circular dependency
 type User interface {
-	GetID() uint
+	GetID() string
 	GetName() string
 	GetEmail() string
 	GetGroup() *group.Group

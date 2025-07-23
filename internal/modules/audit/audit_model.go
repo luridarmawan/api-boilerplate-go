@@ -2,11 +2,14 @@ package audit
 
 import (
 	"time"
+
+	"apiserver/internal/utils"
+	"gorm.io/gorm"
 )
 
 type AuditLog struct {
-	ID             uint      `json:"id" gorm:"primaryKey"`
-	UserID         *uint     `json:"user_id" gorm:"index"`
+	ID             string    `json:"id" gorm:"type:uuid;primaryKey"`
+	AccessID       *string   `json:"access_id" gorm:"type:uuid;index"`
 	UserEmail      string    `json:"user_email" gorm:"index"`
 	APIKey         string    `json:"api_key" gorm:"index"`
 	Method         string    `json:"method" gorm:"not null"`
@@ -24,7 +27,7 @@ type AuditLog struct {
 }
 
 type AuditLogResponse struct {
-	ID           uint      `json:"id"`
+	ID           string    `json:"id"`
 	UserEmail    string    `json:"user_email"`
 	Method       string    `json:"method"`
 	Path         string    `json:"path"`
@@ -35,6 +38,7 @@ type AuditLogResponse struct {
 }
 
 type AuditLogFilter struct {
+	AccessID   string `json:"access_id"`
 	UserEmail  string `json:"user_email"`
 	Method     string `json:"method"`
 	Path       string `json:"path"`
@@ -47,4 +51,12 @@ type AuditLogFilter struct {
 
 func (AuditLog) TableName() string {
 	return "audit_logs"
+}
+
+// BeforeCreate hook to generate UUIDv7 before creating a new audit log
+func (a *AuditLog) BeforeCreate(tx *gorm.DB) error {
+	if a.ID == "" {
+		a.ID = utils.GenerateUUIDv7()
+	}
+	return nil
 }

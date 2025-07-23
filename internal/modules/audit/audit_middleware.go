@@ -46,11 +46,11 @@ func NewAuditMiddleware(auditRepo Repository) fiber.Handler {
 		responseTime := time.Since(start).Milliseconds()
 
 		// Get user information if available
-		var userID *uint
+		var accessID *string
 		var userEmail, apiKey string
 		
 		if user, ok := c.Locals("user").(*access.User); ok {
-			userID = &user.ID
+			accessID = &user.ID
 			userEmail = user.Email
 		}
 		
@@ -72,7 +72,7 @@ func NewAuditMiddleware(auditRepo Repository) fiber.Handler {
 
 		// Create audit log entry
 		auditLog := &AuditLog{
-			UserID:         userID,
+			AccessID:       accessID,
 			UserEmail:      userEmail,
 			APIKey:         apiKey,
 			Method:         c.Method(),

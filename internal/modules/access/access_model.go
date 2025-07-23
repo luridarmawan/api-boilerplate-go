@@ -4,12 +4,13 @@ import (
 	"time"
 
 	"apiserver/internal/modules/group"
+	"apiserver/internal/utils"
 
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID          uint           `json:"id" gorm:"primaryKey"`
+	ID          string         `json:"id" gorm:"type:uuid;primaryKey"`
 	Name        string         `json:"name" gorm:"not null"`
 	Email       string         `json:"email" gorm:"uniqueIndex;not null"`
 	APIKey      string         `json:"-" gorm:"uniqueIndex;not null"`
@@ -28,7 +29,7 @@ func (User) TableName() string {
 }
 
 // Implement User interface
-func (u *User) GetID() uint {
+func (u *User) GetID() string {
 	return u.ID
 }
 
@@ -56,4 +57,12 @@ func (u *User) GetRateLimit() int {
 // UpdateRateLimitRequest is the request body for updating API key rate limit
 type UpdateRateLimitRequest struct {
 	RateLimit int `json:"rate_limit" validate:"required,min=1"`
+}
+
+// BeforeCreate hook to generate UUIDv7 before creating a new user
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	if u.ID == "" {
+		u.ID = utils.GenerateUUIDv7()
+	}
+	return nil
 }

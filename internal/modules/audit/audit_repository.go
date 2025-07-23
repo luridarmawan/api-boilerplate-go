@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	CreateAuditLog(log *AuditLog) error
 	GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, int64, error)
-	GetAuditLogByID(id uint) (*AuditLog, error)
+	GetAuditLogByID(id string) (*AuditLog, error)
 	DeleteOldLogs(days int) error
 }
 
@@ -35,6 +35,9 @@ func (r *repository) GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, in
 	query = query.Where("status_id = ?", 0)
 
 	// Apply filters
+	if filter.AccessID != "" {
+		query = query.Where("access_id = ?", filter.AccessID)
+	}
 	if filter.UserEmail != "" {
 		query = query.Where("user_email ILIKE ?", "%"+filter.UserEmail+"%")
 	}
@@ -78,7 +81,7 @@ func (r *repository) GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, in
 	return logs, total, err
 }
 
-func (r *repository) GetAuditLogByID(id uint) (*AuditLog, error) {
+func (r *repository) GetAuditLogByID(id string) (*AuditLog, error) {
 	var log AuditLog
 	err := r.db.Where("id = ? AND status_id = ?", id, 0).First(&log).Error
 	if err != nil {

@@ -9,9 +9,9 @@ import (
 
 type Repository interface {
 	FindByAPIKey(apiKey string) (*User, error)
-	UpdateExpiredDate(id uint, expiredDate *time.Time) error
-	UpdateRateLimit(id uint, rateLimit int) error
-	GetUserByID(id uint) (*User, error)
+	UpdateExpiredDate(id string, expiredDate *time.Time) error
+	UpdateRateLimit(id string, rateLimit int) error
+	GetUserByID(id string) (*User, error)
 }
 
 // AuthRepositoryImpl implements types.AuthRepository
@@ -56,11 +56,11 @@ func (r *repository) FindByAPIKey(apiKey string) (*User, error) {
 	return &user, nil
 }
 
-func (r *repository) UpdateExpiredDate(id uint, expiredDate *time.Time) error {
+func (r *repository) UpdateExpiredDate(id string, expiredDate *time.Time) error {
 	return r.db.Model(&User{}).Where("id = ?", id).Update("expired_date", expiredDate).Error
 }
 
-func (r *repository) GetUserByID(id uint) (*User, error) {
+func (r *repository) GetUserByID(id string) (*User, error) {
 	var user User
 	err := r.db.Preload("Group").Where("id = ? AND status_id = ?", id, 0).First(&user).Error
 	if err != nil {
@@ -69,6 +69,6 @@ func (r *repository) GetUserByID(id uint) (*User, error) {
 	return &user, nil
 }
 
-func (r *repository) UpdateRateLimit(id uint, rateLimit int) error {
+func (r *repository) UpdateRateLimit(id string, rateLimit int) error {
 	return r.db.Model(&User{}).Where("id = ?", id).Update("rate_limit", rateLimit).Error
 }

@@ -1,7 +1,6 @@
 package access
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -46,7 +45,7 @@ func (h *Handler) GetProfile(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Param data body UpdateExpiredDateRequest true "Expiration date data"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
@@ -57,9 +56,8 @@ func (h *Handler) GetProfile(c *fiber.Ctx) error {
 // SWAGGER_ACCESS_END
 func (h *Handler) UpdateExpiredDate(c *fiber.Ctx) error {
 	// Parse user ID from path
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid user ID",
@@ -76,7 +74,7 @@ func (h *Handler) UpdateExpiredDate(c *fiber.Ctx) error {
 	}
 
 	// Check if user exists
-	user, err := h.repo.GetUserByID(uint(id))
+	user, err := h.repo.GetUserByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
@@ -124,7 +122,7 @@ func (h *Handler) UpdateExpiredDate(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -134,9 +132,8 @@ func (h *Handler) UpdateExpiredDate(c *fiber.Ctx) error {
 // SWAGGER_ACCESS_END
 func (h *Handler) RemoveExpiredDate(c *fiber.Ctx) error {
 	// Parse user ID from path
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid user ID",
@@ -144,7 +141,7 @@ func (h *Handler) RemoveExpiredDate(c *fiber.Ctx) error {
 	}
 
 	// Check if user exists
-	user, err := h.repo.GetUserByID(uint(id))
+	user, err := h.repo.GetUserByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
@@ -180,7 +177,7 @@ func (h *Handler) RemoveExpiredDate(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "User ID"
+// @Param id path string true "User ID"
 // @Param data body UpdateRateLimitRequest true "Rate limit data"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
@@ -191,9 +188,8 @@ func (h *Handler) RemoveExpiredDate(c *fiber.Ctx) error {
 // SWAGGER_ACCESS_END
 func (h *Handler) UpdateRateLimit(c *fiber.Ctx) error {
 	// Parse user ID from path
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid user ID",
@@ -218,7 +214,7 @@ func (h *Handler) UpdateRateLimit(c *fiber.Ctx) error {
 	}
 
 	// Check if user exists
-	user, err := h.repo.GetUserByID(uint(id))
+	user, err := h.repo.GetUserByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
