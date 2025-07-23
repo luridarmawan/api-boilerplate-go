@@ -29,6 +29,7 @@ import (
 // @contact.name API Support
 // @host localhost:3000
 // @BasePath /
+// @schemes http https
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
@@ -47,6 +48,7 @@ func main() {
 	docs.SwaggerInfo.Version = config.APIVersion
 	docs.SwaggerInfo.Host = config.BaseURL
 	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	// Initialize database
 	database.InitDatabase(config)

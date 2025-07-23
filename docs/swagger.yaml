@@ -1193,6 +1193,9 @@ paths:
       summary: Get user profile
       tags:
       - Access
+schemes:
+- http
+- https
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and your API token
