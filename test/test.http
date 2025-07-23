@@ -1,0 +1,115 @@
+
+@BaseURL=http://localhost:3000
+
+### Audit Logs
+curl -s -X GET "http://localhost:3000/v1/audit-logs" -H "Authorization: Bearer admin-api-key-789"
+
+
+### Test with different user roles
+
+curl -X GET "http://localhost:3000/v1/profile" \
+  -H "Authorization: Bearer test-api-key-123"
+
+###
+curl -X GET "http://localhost:3000/v1/examples" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+###
+curl -X POST "http://localhost:3000/v1/examples" \
+  -H "Authorization: Bearer test-api-key-123" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Test Example", "description": "Testing API"}'
+
+### View audit logs (Admin only)
+curl -X GET "http://localhost:3000/v1/audit-logs" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Test UUID endpoints (replace with actual UUID from your database)
+# Get user profile
+curl -X GET http://localhost:3000/v1/profile
+Authorization: Bearer your-api-key-here
+
+### Update rate limit (replace UUID with actual user ID)
+curl -X PUT http://localhost:3000/v1/access/019835fa-bf95-7617-bd25-f633f282789f/rate-limit \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "rate_limit": 200
+}'
+
+### Update expired date (replace UUID with actual user ID)
+curl -X PUT http://localhost:3000/v1/access/01983465-34ad-760b-87f5-b73601f6e281/expired-date \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "expired_date": "2025-12-31T23:59:59Z"
+}'
+
+### Remove expired date (replace UUID with actual user ID)
+curl -X DELETE http://localhost:3000/v1/access/019835fa-bf9c-74ea-9df2-7da9d9576c7a/expired-date
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Test Audit Log UUID endpoints
+# Get all audit logs
+curl -X GET http://localhost:3000/v1/audit-logs
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get specific audit log by UUID (replace with actual UUID from your database)
+curl -X GET http://localhost:3000/v1/audit-logs/01983465-34ad-760b-87f5-b73601f6e281
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get audit logs with filters
+curl -X GET "http://localhost:3000/v1/audit-logs?method=GET&limit=10&offset=0"
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get audit logs filtered by access_id (replace with actual access UUID)
+curl -X GET http://localhost:3000/v1/audit-logs?access_id=01983465-34ad-760b-87f5-b73601f6e281&limit=10
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get audit logs with multiple filters
+curl -X GET http://localhost:3000/v1/audit-logs?access_id=01983465-34ad-760b-87f5-b73601f6e281&method=POST&user_email=test@example.com
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Delete old audit logs (older than 30 days)
+curl -X DELETE http://localhost:3000/v1/audit-logs/cleanup?days=30
+  -H "Authorization: Bearer admin-api-key-789"
+  
+###
+# Test Example UUID endpoints
+# Create a new example
+curl -X POST http://localhost:3000/v1/examples
+  -H "Authorization: Bearer test-api-key-123"
+  -H "Content-Type: application/json"
+  -d '{
+  "name": "Test Example with UUID",
+  "description": "Testing UUID implementation"
+}'
+
+### Get all examples
+curl -X GET http://localhost:3000/v1/examples
+  -H "Authorization: Bearer test-api-key-123"
+
+### Get specific example by UUID (replace with actual UUID from your database)
+curl -X GET http://localhost:3000/v1/examples/01983465-34ad-760b-87f5-b73601f6e281
+  -H "Authorization: Bearer test-api-key-123"
+
+### Update example by UUID (replace with actual UUID from your database)
+curl -X PUT http://localhost:3000/v1/examples/01983465-34ad-760b-87f5-b73601f6e281
+  -H "Authorization: Bearer test-api-key-123"
+  -H "Content-Type: application/json"
+  -d '{
+  "name": "Updated Example Name",
+  "description": "Updated description with UUID"
+}'
+
+### Soft delete example by UUID (replace with actual UUID from your database)
+curl -X DELETE http://localhost:3000/v1/examples/01983465-34ad-760b-87f5-b73601f6e281
+  -H "Authorization: Bearer test-api-key-123"
+
+### Get deleted examples
+curl -X GET http://localhost:3000/v1/examples/deleted
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Restore example by UUID (replace with actual UUID from your database)
+curl -X POST http://localhost:3000/v1/examples/01983465-34ad-760b-87f5-b73601f6e281/restore
+  -H "Authorization: Bearer admin-api-key-789"
