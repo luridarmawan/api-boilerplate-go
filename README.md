@@ -428,6 +428,8 @@ Initial data will be inserted into the following tables:
 
 ![docs](docs/docs.png)
 
+![docs](docs/docs-scalar.png)
+
 Auto-generated Swagger docs from Fiber comments:
 
 ```go

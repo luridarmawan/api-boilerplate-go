@@ -123,14 +123,14 @@ func main() {
 		return c.SendString(html)
 	})
 
-	app.Get("/scalar", func(c *fiber.Ctx) error {
+	app.Get("/docs", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/scalar.html")
 		html := string(data)
 		c.Set("Content-Type", "text/html")
 		return c.SendString(html)
 	})
 
-	app.Get("/docs", func(c *fiber.Ctx) error {
+	app.Get("/swagger", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/swagger.html")
 		html := string(data)
 		c.Set("Content-Type", "text/html")
