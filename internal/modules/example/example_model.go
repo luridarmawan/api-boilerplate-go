@@ -3,11 +3,12 @@ package example
 import (
 	"time"
 
+	"apiserver/internal/utils"
 	"gorm.io/gorm"
 )
 
 type Example struct {
-	ID          uint           `json:"id" gorm:"primaryKey"`
+	ID          string         `json:"id" gorm:"type:uuid;primaryKey"`
 	Name        string         `json:"name" gorm:"not null"`
 	Description string         `json:"description"`
 	CreatedAt   time.Time      `json:"created_at"`
@@ -23,4 +24,12 @@ type CreateExampleRequest struct {
 
 func (Example) TableName() string {
 	return "examples"
+}
+
+// BeforeCreate hook to generate UUIDv7 before creating a new example
+func (e *Example) BeforeCreate(tx *gorm.DB) error {
+	if e.ID == "" {
+		e.ID = utils.GenerateUUIDv7()
+	}
+	return nil
 }

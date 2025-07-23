@@ -7,10 +7,10 @@ import (
 type Repository interface {
 	CreateExample(example *Example) error
 	GetAllExamples() ([]Example, error)
-	GetExampleByID(id uint) (*Example, error)
+	GetExampleByID(id string) (*Example, error)
 	UpdateExample(example *Example) error
-	SoftDeleteExample(id uint) error
-	RestoreExample(id uint) error
+	SoftDeleteExample(id string) error
+	RestoreExample(id string) error
 	GetDeletedExamples() ([]Example, error)
 }
 
@@ -32,7 +32,7 @@ func (r *repository) GetAllExamples() ([]Example, error) {
 	return examples, err
 }
 
-func (r *repository) GetExampleByID(id uint) (*Example, error) {
+func (r *repository) GetExampleByID(id string) (*Example, error) {
 	var example Example
 	err := r.db.Where("id = ? AND status_id = ?", id, 0).First(&example).Error
 	if err != nil {
@@ -45,11 +45,11 @@ func (r *repository) UpdateExample(example *Example) error {
 	return r.db.Save(example).Error
 }
 
-func (r *repository) SoftDeleteExample(id uint) error {
+func (r *repository) SoftDeleteExample(id string) error {
 	return r.db.Model(&Example{}).Where("id = ?", id).Update("status_id", 1).Error
 }
 
-func (r *repository) RestoreExample(id uint) error {
+func (r *repository) RestoreExample(id string) error {
 	return r.db.Model(&Example{}).Where("id = ?", id).Update("status_id", 0).Error
 }
 

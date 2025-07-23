@@ -1,7 +1,6 @@
 package example
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -97,7 +96,7 @@ func (h *Handler) GetExamples(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "Example ID"
+// @Param id path string true "Example ID"
 // @Success 200 {object} Example
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -105,16 +104,15 @@ func (h *Handler) GetExamples(c *fiber.Ctx) error {
 // @Failure 500 {object} map[string]string
 // @Router /v1/examples/{id} [get]
 func (h *Handler) GetExample(c *fiber.Ctx) error {
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid example ID",
 		})
 	}
 
-	example, err := h.repo.GetExampleByID(uint(id))
+	example, err := h.repo.GetExampleByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
@@ -135,7 +133,7 @@ func (h *Handler) GetExample(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "Example ID"
+// @Param id path string true "Example ID"
 // @Param example body CreateExampleRequest true "Example data"
 // @Success 200 {object} Example
 // @Failure 400 {object} map[string]string
@@ -144,9 +142,8 @@ func (h *Handler) GetExample(c *fiber.Ctx) error {
 // @Failure 500 {object} map[string]string
 // @Router /v1/examples/{id} [put]
 func (h *Handler) UpdateExample(c *fiber.Ctx) error {
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid example ID",
@@ -154,7 +151,7 @@ func (h *Handler) UpdateExample(c *fiber.Ctx) error {
 	}
 
 	// Check if example exists
-	example, err := h.repo.GetExampleByID(uint(id))
+	example, err := h.repo.GetExampleByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
@@ -202,7 +199,7 @@ func (h *Handler) UpdateExample(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "Example ID"
+// @Param id path string true "Example ID"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -210,9 +207,8 @@ func (h *Handler) UpdateExample(c *fiber.Ctx) error {
 // @Failure 500 {object} map[string]string
 // @Router /v1/examples/{id} [delete]
 func (h *Handler) SoftDeleteExample(c *fiber.Ctx) error {
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid example ID",
@@ -220,7 +216,7 @@ func (h *Handler) SoftDeleteExample(c *fiber.Ctx) error {
 	}
 
 	// Check if example exists
-	_, err = h.repo.GetExampleByID(uint(id))
+	_, err := h.repo.GetExampleByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",
@@ -228,7 +224,7 @@ func (h *Handler) SoftDeleteExample(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := h.repo.SoftDeleteExample(uint(id)); err != nil {
+	if err := h.repo.SoftDeleteExample(id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to delete example",
@@ -248,7 +244,7 @@ func (h *Handler) SoftDeleteExample(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "Example ID"
+// @Param id path string true "Example ID"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -256,16 +252,15 @@ func (h *Handler) SoftDeleteExample(c *fiber.Ctx) error {
 // @Failure 500 {object} map[string]string
 // @Router /v1/examples/{id}/restore [post]
 func (h *Handler) RestoreExample(c *fiber.Ctx) error {
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid example ID",
 		})
 	}
 
-	if err := h.repo.RestoreExample(uint(id)); err != nil {
+	if err := h.repo.RestoreExample(id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to restore example",
