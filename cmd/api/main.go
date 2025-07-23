@@ -121,10 +121,17 @@ func main() {
 		jsonPath := filepath.Join(baseDir, "docs", "swagger.json")
 		data, err := os.ReadFile(jsonPath)
 		if err != nil {
-			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+			return utils.Output(c, "Failed to load OpenAPI file", false, 500)
 		}
+
+		// Filter swagger data in real-time
+		filteredData, err := utils.FilterSwagger(data, config.DocFilter, false)
+		if err != nil {
+			return utils.Output(c, "Failed to filter swagger", false, 500)
+		}
+
 		c.Set("Content-Type", "application/json")
-		return c.Send(data)
+		return c.Send(filteredData)
 	})
 
 	app.Get("/rapidocs", func(c *fiber.Ctx) error {

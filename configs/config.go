@@ -19,6 +19,7 @@ type Config struct {
 	DBName     string
 	DBSSLMode  string
 	ServerPort string
+	DocFilter  string
 
 	// Build info
 	Version   string
@@ -51,6 +52,7 @@ func LoadConfig() *Config {
 		DBName:     getEnv("DB_NAME", "my_api_db"),
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 		ServerPort: getEnv("SERVER_PORT", "3000"),
+		DocFilter:  getEnv("API_DOC_FILTER", ""),
 
 		// Inject build-time values
 		Version:   Version,

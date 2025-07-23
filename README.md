@@ -473,24 +473,17 @@ Auto-generated Swagger docs from Fiber comments:
 ```bash
 # Generate complete documentation
 swag init -g cmd/api/main.go -o docs
-
-# Generate public documentation (removes internal endpoints)
-./scripts/generate-public-docs.sh
 ```
 
 **Documentation Filtering:**
 
-The API includes a powerful tool to filter Swagger documentation by removing specific endpoints:
+The API provides a flexible mechanism to filter out specific endpoints from the Swagger documentation, allowing for cleaner and more focused API references.
 
 ```bash
-# Remove Access, Example, and Permission endpoints
-./scripts/filter-swagger.sh
+# add to your .env file
+# This configuration will hide the specified endpoints and examples
+API_DOC_FILTER=Example,Permission
 
-# Remove specific tags
-./scripts/filter-swagger.sh "Access,Permission"
-
-# Create filtered copy
-./scripts/filter-swagger.sh "Access,Permission" "docs/swagger.json" "docs/swagger-public.json"
 ```
 
 **Use Cases:**
