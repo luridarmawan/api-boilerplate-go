@@ -116,6 +116,24 @@ func main() {
 		return utils.Output(c, "OK")
 	})
 
+	app.Get("/docs/api-docs.json", func(c *fiber.Ctx) error {
+		baseDir, _ := filepath.Abs(".")
+		jsonPath := filepath.Join(baseDir, "docs", "swagger.json")
+		data, err := os.ReadFile(jsonPath)
+		if err != nil {
+			return utils.Output(c, "Failed to load OpenAPI file", false, 500)
+		}
+
+		// Filter swagger data in real-time
+		filteredData, err := utils.FilterSwagger(data, config.DocFilter, false)
+		if err != nil {
+			return utils.Output(c, "Failed to filter swagger", false, 500)
+		}
+
+		c.Set("Content-Type", "application/json")
+		return c.Send(filteredData)
+	})
+
 	app.Get("/rapidocs", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/rapidoc.html")
 		html := string(data)
@@ -137,16 +155,16 @@ func main() {
 		return c.SendString(html)
 	})
 
-	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
-		baseDir, _ := filepath.Abs(".")
-		jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
-		data, err := os.ReadFile(jsonPath)
-		if err != nil {
-			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
-		}
-		c.Set("Content-Type", "application/json")
-		return c.Send(data)
-	})
+	// app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
+	// 	baseDir, _ := filepath.Abs(".")
+	// 	jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
+	// 	data, err := os.ReadFile(jsonPath)
+	// 	if err != nil {
+	// 		return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+	// 	}
+	// 	c.Set("Content-Type", "application/json")
+	// 	return c.Send(data)
+	// })
 
 	// Middleware
 	app.Use(logger.New())
