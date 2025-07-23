@@ -137,16 +137,16 @@ func main() {
 		return c.SendString(html)
 	})
 
-	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
-		baseDir, _ := filepath.Abs(".")
-		jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
-		data, err := os.ReadFile(jsonPath)
-		if err != nil {
-			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
-		}
-		c.Set("Content-Type", "application/json")
-		return c.Send(data)
-	})
+	// app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
+	// 	baseDir, _ := filepath.Abs(".")
+	// 	jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
+	// 	data, err := os.ReadFile(jsonPath)
+	// 	if err != nil {
+	// 		return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+	// 	}
+	// 	c.Set("Content-Type", "application/json")
+	// 	return c.Send(data)
+	// })
 
 	// Middleware
 	app.Use(logger.New())

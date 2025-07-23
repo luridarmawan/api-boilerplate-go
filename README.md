@@ -382,9 +382,36 @@ product.RegisterProductRoutes(app, productHandler, authMiddleware)
 
 ## 🧰 Development Tools
 
-- Hot reload dengan `air`
-- Linter: `golangci-lint`
-- Database: `PostgreSQL`
+- **Hot reload**: `air` untuk development
+- **Linter**: `golangci-lint` untuk code quality
+- **Database**: `PostgreSQL` dengan GORM
+- **Documentation**: Swagger dengan filtering tool
+- **API Filtering**: Custom tool untuk filter endpoint berdasarkan tags
+
+### Swagger Documentation Tools
+
+#### Generate Documentation
+```bash
+# Complete documentation
+swag init -g cmd/api/main.go -o docs
+
+# Public documentation (filtered)
+./scripts/generate-public-docs.sh
+```
+
+#### Filter Endpoints
+```bash
+# Remove internal endpoints
+./scripts/filter-swagger.sh "Access,Permission"
+
+# Custom filtering
+./scripts/filter-swagger.sh "TagName1,TagName2" "input.json" "output.json"
+```
+
+#### Available Scripts
+- `scripts/generate-public-docs.sh` - Generate public API documentation
+- `scripts/filter-swagger.sh` - Filter endpoints by tags
+- `scripts/build.sh` - Build application for different environments
 
 ## 🗃️ Seeder & Test Data
 
@@ -444,8 +471,33 @@ Auto-generated Swagger docs from Fiber comments:
 
 **How to build documentation:**
 ```bash
+# Generate complete documentation
 swag init -g cmd/api/main.go -o docs
+
+# Generate public documentation (removes internal endpoints)
+./scripts/generate-public-docs.sh
 ```
+
+**Documentation Filtering:**
+
+The API includes a powerful tool to filter Swagger documentation by removing specific endpoints:
+
+```bash
+# Remove Access, Example, and Permission endpoints
+./scripts/filter-swagger.sh
+
+# Remove specific tags
+./scripts/filter-swagger.sh "Access,Permission"
+
+# Create filtered copy
+./scripts/filter-swagger.sh "Access,Permission" "docs/swagger.json" "docs/swagger-public.json"
+```
+
+**Use Cases:**
+- 🔒 **Public API Docs**: Remove internal/admin endpoints from public documentation
+- 👥 **Client-Specific**: Create different documentation for different client types  
+- 🛡️ **Security**: Hide sensitive endpoints from public view
+- 🏢 **Multi-tenant**: Different endpoint visibility per tenant
 
 API Documentation will available at [http://localhost:3000/docs](http://localhost:3000/docs)
 
