@@ -139,7 +139,7 @@ func main() {
 
 	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
 		baseDir, _ := filepath.Abs(".")
-		jsonPath := filepath.Join(baseDir, "docs", "v3", "openapi.json")
+		jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
 		data, err := os.ReadFile(jsonPath)
 		if err != nil {
 			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
