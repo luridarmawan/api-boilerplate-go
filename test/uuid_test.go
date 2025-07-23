@@ -63,3 +63,24 @@ func TestGenerateUUID(t *testing.T) {
 
 	t.Logf("Generated standard UUIDs: %s, %s", uuid1, uuid2)
 }
+
+func TestAuditLogUUIDGeneration(t *testing.T) {
+	// Test that audit log UUIDs are time-sortable
+	uuid1 := utils.GenerateUUIDv7()
+	time.Sleep(1 * time.Millisecond) // Ensure different timestamps
+	uuid2 := utils.GenerateUUIDv7()
+	time.Sleep(1 * time.Millisecond) // Ensure different timestamps
+	uuid3 := utils.GenerateUUIDv7()
+
+	// All should be different
+	if uuid1 == uuid2 || uuid2 == uuid3 || uuid1 == uuid3 {
+		t.Error("All generated UUIDs should be unique")
+	}
+
+	// Should be sortable (lexicographically ordered by time)
+	if !(uuid1 < uuid2 && uuid2 < uuid3) {
+		t.Errorf("UUIDs should be time-sortable: %s < %s < %s", uuid1, uuid2, uuid3)
+	}
+
+	t.Logf("Time-sortable audit log UUIDs: %s, %s, %s", uuid1, uuid2, uuid3)
+}

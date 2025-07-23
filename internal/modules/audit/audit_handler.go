@@ -89,7 +89,7 @@ func (h *Handler) GetAuditLogs(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id path int true "Audit Log ID"
+// @Param id path string true "Audit Log ID"
 // @Success 200 {object} AuditLog
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -98,16 +98,15 @@ func (h *Handler) GetAuditLogs(c *fiber.Ctx) error {
 // @Router /v1/audit-logs/{id} [get]
 // SWAGGER_AUDIT_END
 func (h *Handler) GetAuditLog(c *fiber.Ctx) error {
-	idStr := c.Params("id")
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
+	id := c.Params("id")
+	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid audit log ID",
 		})
 	}
 
-	log, err := h.repo.GetAuditLogByID(uint(id))
+	log, err := h.repo.GetAuditLogByID(id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"status":  "error",

@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	CreateAuditLog(log *AuditLog) error
 	GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, int64, error)
-	GetAuditLogByID(id uint) (*AuditLog, error)
+	GetAuditLogByID(id string) (*AuditLog, error)
 	DeleteOldLogs(days int) error
 }
 
@@ -78,7 +78,7 @@ func (r *repository) GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, in
 	return logs, total, err
 }
 
-func (r *repository) GetAuditLogByID(id uint) (*AuditLog, error) {
+func (r *repository) GetAuditLogByID(id string) (*AuditLog, error) {
 	var log AuditLog
 	err := r.db.Where("id = ? AND status_id = ?", id, 0).First(&log).Error
 	if err != nil {
