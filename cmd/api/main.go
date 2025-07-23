@@ -11,9 +11,9 @@ import (
 	"apiserver/internal/middleware"
 	"apiserver/internal/modules/access"
 	"apiserver/internal/modules/audit"
-	"apiserver/internal/modules/example"
 	"apiserver/internal/modules/group"
 	"apiserver/internal/modules/permission"
+	"apiserver/internal/modules/example"
 	"apiserver/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -87,6 +87,8 @@ func main() {
 	rateLimiter := middleware.NewRateLimiter(120)
 	rateLimitMiddleware := middleware.RateLimitMiddleware(rateLimiter)
 
+	// Initialize your custom module here
+
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -156,6 +158,8 @@ func main() {
 	permission.RegisterPermissionRoutes(app, permissionHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	group.RegisterGroupRoutes(app, groupHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	audit.RegisterAuditRoutes(app, auditHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
+
+	// Register your module route here
 
 	// Start server
 	log.Printf("Server starting on port %s", config.ServerPort)
