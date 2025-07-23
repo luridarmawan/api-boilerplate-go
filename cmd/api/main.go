@@ -116,6 +116,17 @@ func main() {
 		return utils.Output(c, "OK")
 	})
 
+	app.Get("/docs/api-docs.json", func(c *fiber.Ctx) error {
+		baseDir, _ := filepath.Abs(".")
+		jsonPath := filepath.Join(baseDir, "docs", "swagger.json")
+		data, err := os.ReadFile(jsonPath)
+		if err != nil {
+			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+		}
+		c.Set("Content-Type", "application/json")
+		return c.Send(data)
+	})
+
 	app.Get("/rapidocs", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/rapidoc.html")
 		html := string(data)
