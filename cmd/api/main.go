@@ -20,6 +20,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
+	"path/filepath"
 )
 
 // @title My API
@@ -120,11 +121,29 @@ func main() {
 		return c.SendString(html)
 	})
 
+	app.Get("/scalar", func(c *fiber.Ctx) error {
+		data, _ := os.ReadFile("./docs/scalar.html")
+		html := string(data)
+		c.Set("Content-Type", "text/html")
+		return c.SendString(html)
+	})
+
 	app.Get("/docs", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/swagger.html")
 		html := string(data)
 		c.Set("Content-Type", "text/html")
 		return c.SendString(html)
+	})
+
+	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
+		baseDir, _ := filepath.Abs(".")
+		jsonPath := filepath.Join(baseDir, "docs", "v3", "openapi.json")
+		data, err := os.ReadFile(jsonPath)
+		if err != nil {
+			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+		}
+		c.Set("Content-Type", "application/json")
+		return c.Send(data)
 	})
 
 	// Middleware
