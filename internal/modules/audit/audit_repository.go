@@ -35,6 +35,9 @@ func (r *repository) GetAuditLogs(filter AuditLogFilter) ([]AuditLogResponse, in
 	query = query.Where("status_id = ?", 0)
 
 	// Apply filters
+	if filter.AccessID != "" {
+		query = query.Where("access_id = ?", filter.AccessID)
+	}
 	if filter.UserEmail != "" {
 		query = query.Where("user_email ILIKE ?", "%"+filter.UserEmail+"%")
 	}

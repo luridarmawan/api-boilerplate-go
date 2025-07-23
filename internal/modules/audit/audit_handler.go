@@ -22,6 +22,7 @@ func NewHandler(repo Repository) *Handler {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Param access_id query string false "Filter by access ID (UUID)"
 // @Param user_email query string false "Filter by user email"
 // @Param method query string false "Filter by HTTP method"
 // @Param path query string false "Filter by API path"
@@ -37,6 +38,7 @@ func NewHandler(repo Repository) *Handler {
 // SWAGGER_AUDIT_END
 func (h *Handler) GetAuditLogs(c *fiber.Ctx) error {
 	filter := AuditLogFilter{
+		AccessID:   c.Query("access_id"),
 		UserEmail:  c.Query("user_email"),
 		Method:     c.Query("method"),
 		Path:       c.Query("path"),

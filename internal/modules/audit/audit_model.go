@@ -9,7 +9,7 @@ import (
 
 type AuditLog struct {
 	ID             string    `json:"id" gorm:"type:uuid;primaryKey"`
-	UserID         *string   `json:"user_id" gorm:"type:uuid;index"`
+	AccessID       *string   `json:"access_id" gorm:"type:uuid;index"`
 	UserEmail      string    `json:"user_email" gorm:"index"`
 	APIKey         string    `json:"api_key" gorm:"index"`
 	Method         string    `json:"method" gorm:"not null"`
@@ -38,6 +38,7 @@ type AuditLogResponse struct {
 }
 
 type AuditLogFilter struct {
+	AccessID   string `json:"access_id"`
 	UserEmail  string `json:"user_email"`
 	Method     string `json:"method"`
 	Path       string `json:"path"`
