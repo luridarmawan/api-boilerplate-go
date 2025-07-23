@@ -22,6 +22,7 @@
 - [🧰 Development Tools](#-development-tools)
 - [🗃️ Seeder & Test Data](#%EF%B8%8F-seeder--test-data)
 - [📖 API Documentation](#-api-documentation)
+- [🚀 Deployment](#-deployment)
 
 ## 🧩 Features
 
@@ -494,5 +495,79 @@ curl -X GET http://localhost:3000/api/v1/example -H "Authorization: Bearer {toke
 
 [See Use Case documentaion](docs/usage/usecase.md)
 
+## 🚀 Deployment
+
+This API supports multiple deployment strategies across different environments with automated CI/CD pipelines.
+
+### Quick Deployment
+
+#### Local Development
+```bash
+# Build for development
+./scripts/build.sh dev
+
+# Run with Docker Compose
+docker-compose up -d
+```
+
+#### Production Deployment
+```bash
+# Build for production
+./scripts/build.sh prod
+
+# Deploy with Docker
+docker build -t api-hub:latest .
+docker run -d --name api-hub -p 3000:3000 --env-file .env.prod api-hub:latest
+```
+
+### Environment Configuration
+
+The API supports environment-specific configurations:
+
+| Environment | Config File | Base URL | Description |
+|-------------|-------------|----------|-------------|
+| Development | `.env.dev` | `localhost:3000` | Local development |
+| Staging | `.env.staging` | `staging-api.carik.id` | Pre-production testing |
+| Production | `.env.prod` | `api.carik.id` | Live production |
+
+### CI/CD Pipeline Support
+
+#### GitHub Actions
+- ✅ Automated testing and building
+- ✅ Environment-specific deployments
+- ✅ Docker image building and registry push
+- ✅ Swagger documentation generation
+
+#### GitLab CI/CD
+- ✅ Multi-stage pipeline (test, build, deploy)
+- ✅ Docker registry integration
+- ✅ Manual production deployment approval
+- ✅ Caching for optimized build times
+
+### Key Features
+
+- 🔄 **Automated Swagger Generation**: No manual `swag init` required in production
+- 🐳 **Docker Support**: Full containerization with multi-stage builds
+- 🔧 **Environment Variables**: Dynamic configuration per environment
+- 🛡️ **Security**: SSL/TLS support and secure deployment practices
+- 📊 **Monitoring**: Health checks and performance optimization
+- 🔄 **Backup & Recovery**: Database backup strategies included
+
+### Documentation
+
+For comprehensive deployment instructions, CI/CD setup, troubleshooting, and best practices, see:
+
+**📚 [Complete Deployment Guide](docs/DEPLOYMENT.md)**
+
+The deployment guide includes:
+- Step-by-step deployment instructions
+- CI/CD pipeline templates for GitHub Actions and GitLab
+- Docker and Kubernetes deployment configurations
+- Environment variable management
+- Security considerations and best practices
+- Troubleshooting common deployment issues
+- Performance optimization tips
+
+---
 
 > MIT Licensed · Built with ❤️ by [CARIK.id](https://carik.id) team

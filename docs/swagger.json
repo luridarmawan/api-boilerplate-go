@@ -1,4 +1,8 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "This is a modular REST API built with Go Fiber",
@@ -8,7 +12,6 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:3000",
     "basePath": "/",
     "paths": {
         "/v1/access/{id}/expired-date": {
@@ -31,7 +34,7 @@
                 "summary": "Update API key expiration date",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -112,7 +115,7 @@
                 "summary": "Remove API key expiration date",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -186,7 +189,7 @@
                 "summary": "Update API key rate limit",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -268,6 +271,12 @@
                 ],
                 "summary": "Get audit logs",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by access ID (UUID)",
+                        "name": "access_id",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "Filter by user email",
@@ -433,7 +442,7 @@
                 "summary": "Get audit log by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Audit Log ID",
                         "name": "id",
                         "in": "path",
@@ -668,7 +677,7 @@
                 "summary": "Get example by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -739,7 +748,7 @@
                 "summary": "Update example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -819,7 +828,7 @@
                 "summary": "Soft delete example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -895,7 +904,7 @@
                 "summary": "Restore example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -1637,7 +1646,7 @@
                     "type": "integer"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1654,6 +1663,9 @@
         "audit.AuditLog": {
             "type": "object",
             "properties": {
+                "access_id": {
+                    "type": "string"
+                },
                 "api_key": {
                     "type": "string"
                 },
@@ -1661,7 +1673,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "ip_address": {
                     "type": "string"
@@ -1696,9 +1708,6 @@
                 },
                 "user_email": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1726,7 +1735,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

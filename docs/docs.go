@@ -37,7 +37,7 @@ const docTemplate = `{
                 "summary": "Update API key expiration date",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -118,7 +118,7 @@ const docTemplate = `{
                 "summary": "Remove API key expiration date",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -192,7 +192,7 @@ const docTemplate = `{
                 "summary": "Update API key rate limit",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -274,6 +274,12 @@ const docTemplate = `{
                 ],
                 "summary": "Get audit logs",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by access ID (UUID)",
+                        "name": "access_id",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "Filter by user email",
@@ -439,7 +445,7 @@ const docTemplate = `{
                 "summary": "Get audit log by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Audit Log ID",
                         "name": "id",
                         "in": "path",
@@ -674,7 +680,7 @@ const docTemplate = `{
                 "summary": "Get example by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -745,7 +751,7 @@ const docTemplate = `{
                 "summary": "Update example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -825,7 +831,7 @@ const docTemplate = `{
                 "summary": "Soft delete example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -901,7 +907,7 @@ const docTemplate = `{
                 "summary": "Restore example",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Example ID",
                         "name": "id",
                         "in": "path",
@@ -1643,7 +1649,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1660,6 +1666,9 @@ const docTemplate = `{
         "audit.AuditLog": {
             "type": "object",
             "properties": {
+                "access_id": {
+                    "type": "string"
+                },
                 "api_key": {
                     "type": "string"
                 },
@@ -1667,7 +1676,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "ip_address": {
                     "type": "string"
@@ -1702,9 +1711,6 @@ const docTemplate = `{
                 },
                 "user_email": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1732,7 +1738,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -1860,9 +1866,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "",
 	BasePath:         "/",
-	Schemes:          []string{},
+	Schemes:          []string{"http", "https"},
 	Title:            "My API",
 	Description:      "This is a modular REST API built with Go Fiber",
 	InfoInstanceName: "swagger",

@@ -11,23 +11,25 @@ import (
 	"apiserver/internal/middleware"
 	"apiserver/internal/modules/access"
 	"apiserver/internal/modules/audit"
-	"apiserver/internal/modules/example"
 	"apiserver/internal/modules/group"
 	"apiserver/internal/modules/permission"
+	"apiserver/internal/modules/example"
 	"apiserver/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
+	"path/filepath"
 )
 
 // @title My API
 // @version 1.0
 // @description This is a modular REST API built with Go Fiber
 // @contact.name API Support
-// @host localhost:3000
+// --@host localhost:3000
 // @BasePath /
+// @schemes http https
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
@@ -46,6 +48,7 @@ func main() {
 	docs.SwaggerInfo.Version = config.APIVersion
 	docs.SwaggerInfo.Host = config.BaseURL
 	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	// Initialize database
 	database.InitDatabase(config)
@@ -87,6 +90,8 @@ func main() {
 	rateLimiter := middleware.NewRateLimiter(120)
 	rateLimitMiddleware := middleware.RateLimitMiddleware(rateLimiter)
 
+	// Initialize your custom module here
+
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -118,11 +123,29 @@ func main() {
 		return c.SendString(html)
 	})
 
+	app.Get("/scalar", func(c *fiber.Ctx) error {
+		data, _ := os.ReadFile("./docs/scalar.html")
+		html := string(data)
+		c.Set("Content-Type", "text/html")
+		return c.SendString(html)
+	})
+
 	app.Get("/docs", func(c *fiber.Ctx) error {
 		data, _ := os.ReadFile("./docs/swagger.html")
 		html := string(data)
 		c.Set("Content-Type", "text/html")
 		return c.SendString(html)
+	})
+
+	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
+		baseDir, _ := filepath.Abs(".")
+		jsonPath := filepath.Join(baseDir, "docs", "openapi.json")
+		data, err := os.ReadFile(jsonPath)
+		if err != nil {
+			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
+		}
+		c.Set("Content-Type", "application/json")
+		return c.Send(data)
 	})
 
 	// Middleware
@@ -156,6 +179,8 @@ func main() {
 	permission.RegisterPermissionRoutes(app, permissionHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	group.RegisterGroupRoutes(app, groupHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	audit.RegisterAuditRoutes(app, auditHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
+
+	// Register your module route here
 
 	// Start server
 	log.Printf("Server starting on port %s", config.ServerPort)

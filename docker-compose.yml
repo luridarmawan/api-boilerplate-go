@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - API_NAME=API Hub - Docker
+      - API_DESCRIPTION=Global API Hub - Docker Environment
+      - API_VERSION=0.0.1
+      - BASEURL=localhost:3000
+      - SERVER_PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=api_hub_docker
+      - DB_SSLMODE=disable
+    depends_on:
+      - postgres
+    volumes:
+      - ./docs:/root/docs
+      - ./static:/root/static
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=api_hub_docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
