@@ -464,6 +464,8 @@ const mainUpdateTemplate = `
 // Initialize {{.LowerModule}} module
 {{.LowerModule}}Repo := {{.Package}}.NewRepository(db)
 {{.LowerModule}}Handler := {{.Package}}.NewHandler({{.LowerModule}}Repo)
+
+// Add {{.Package}} Routes
 {{.Package}}.Register{{.Module}}Routes(app, {{.LowerModule}}Handler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 `
 
@@ -815,6 +817,9 @@ func main() {
 	fmt.Println("Module created successfully!")
 	fmt.Println("\nTo complete the setup, add the following code to main.go:")
 	
+	fmt.Println("\nAdd the module to the AutoMigrate function in main.go:")
+	fmt.Printf("err := db.AutoMigrate(&%s.%s{}, ...)\n", moduleName, data.Module)
+
 	// Execute the main update template
 	tmpl, err := template.New("mainUpdate").Parse(mainUpdateTemplate)
 	if err != nil {
@@ -827,9 +832,6 @@ func main() {
 		fmt.Printf("Error executing template: %v\n", err)
 		os.Exit(1)
 	}
-	
-	fmt.Println("\nDon't forget to add the module to the AutoMigrate function in main.go:")
-	fmt.Printf("err := db.AutoMigrate(&%s.%s{}, ...)\n", moduleName, data.Module)
 
 	if withPermissions {
 		fmt.Println("\n🔐 Permission script created!")
