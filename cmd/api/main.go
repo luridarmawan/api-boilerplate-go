@@ -25,7 +25,7 @@ import (
 
 // @title My API
 // @version 1.0
-// @description This is a modular REST API built with Go Fiber
+// @description My API Description
 // @contact.name API Support
 // --@host localhost:3000
 // @BasePath /

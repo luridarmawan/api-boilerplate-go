@@ -1870,7 +1870,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{"http", "https"},
 	Title:            "My API",
-	Description:      "This is a modular REST API built with Go Fiber",
+	Description:      "My API Description",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

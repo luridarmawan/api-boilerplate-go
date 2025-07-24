@@ -28,9 +28,18 @@ run:
 	go run cmd/api/main.go
 
 docs:
-	rm -rf docs/swagger.json
-	rm -rf docs/swagger.yaml
+	rm -f docs/swagger.json
+	rm -f docs/swagger.yaml
 	swag init -g cmd/api/main.go -o docs
+	bash -c 'source .env && sed -i \
+		-e "s/My API Description/$${API_DESCRIPTION//\//\\/}/g" \
+		-e "s/My API/$${API_NAME//\//\\/}/g" \
+		-e "s/1.0.0/$${API_VERSION}/g" \
+		docs/swagger.json'
+
+check:
+	@echo "Current Directory: $$(pwd)"
+	@ls -al .env
 
 docs-noexample:
 	# With build tags

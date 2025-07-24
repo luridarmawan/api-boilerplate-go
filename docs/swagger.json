@@ -5,8 +5,8 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "This is a modular REST API built with Go Fiber",
-        "title": "My API",
+        "description": "Super REST API Boilerplate with Go",
+        "title": "API Boilerplate",
         "contact": {
             "name": "API Support"
         },

@@ -161,7 +161,7 @@ definitions:
 info:
   contact:
     name: API Support
-  description: This is a modular REST API built with Go Fiber
+  description: My API Description
   title: My API
   version: "1.0"
 paths:
