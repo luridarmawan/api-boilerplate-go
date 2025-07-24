@@ -13,6 +13,7 @@ import (
 	"apiserver/internal/modules/audit"
 	"apiserver/internal/modules/group"
 	"apiserver/internal/modules/permission"
+	"apiserver/internal/modules/configuration"
 	"apiserver/internal/modules/example"
 	"apiserver/internal/utils"
 
@@ -55,7 +56,7 @@ func main() {
 
 	// Auto-migrate models
 	db := database.GetDB()
-	err := db.AutoMigrate(&access.User{}, &example.Example{}, &permission.Permission{}, &group.Group{}, &audit.AuditLog{})
+	err := db.AutoMigrate(&access.User{}, &example.Example{}, &permission.Permission{}, &group.Group{}, &audit.AuditLog{}, &configuration.Configuration{})
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
@@ -89,6 +90,10 @@ func main() {
 	// Initialize rate limiter middleware (default: 120 requests per minute)
 	rateLimiter := middleware.NewRateLimiter(120)
 	rateLimitMiddleware := middleware.RateLimitMiddleware(rateLimiter)
+
+	// Initialize configuration module
+	configurationRepo := configuration.NewRepository(db)
+	configurationHandler := configuration.NewHandler(configurationRepo)
 
 	// Initialize your custom module here
 
@@ -197,6 +202,7 @@ func main() {
 	permission.RegisterPermissionRoutes(app, permissionHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	group.RegisterGroupRoutes(app, groupHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 	audit.RegisterAuditRoutes(app, auditHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
+	configuration.RegisterConfigurationRoutes(app, configurationHandler, authMiddleware, rateLimitMiddleware, middleware.RequirePermission)
 
 	// Register your module route here
 
