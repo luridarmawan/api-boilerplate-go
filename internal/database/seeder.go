@@ -230,6 +230,42 @@ func seedPermissions(db *gorm.DB) {
 			Action:      "manage",
 			StatusID:    int16Ptr(0), // Active
 		},
+		// Configuration permissions (Admin only)
+		{
+			Name:        "Create Configurations",
+			Description: "Permission to create new configurations (Admin only)",
+			Resource:    "configurations",
+			Action:      "create",
+			StatusID:    int16Ptr(0), // Active
+		},
+		{
+			Name:        "Read Configurations",
+			Description: "Permission to read configurations (Admin only)",
+			Resource:    "configurations",
+			Action:      "read",
+			StatusID:    int16Ptr(0), // Active
+		},
+		{
+			Name:        "Update Configurations",
+			Description: "Permission to update configurations (Admin only)",
+			Resource:    "configurations",
+			Action:      "update",
+			StatusID:    int16Ptr(0), // Active
+		},
+		{
+			Name:        "Delete Configurations",
+			Description: "Permission to delete configurations (Admin only)",
+			Resource:    "configurations",
+			Action:      "delete",
+			StatusID:    int16Ptr(0), // Active
+		},
+		{
+			Name:        "Manage Configurations",
+			Description: "Permission to manage all configuration settings (Admin only)",
+			Resource:    "configurations",
+			Action:      "manage",
+			StatusID:    int16Ptr(0), // Active
+		},
 	}
 
 	for _, p := range permissions {
@@ -273,6 +309,8 @@ func seedGroups(db *gorm.DB) {
 				"Create Examples", "Read Examples", "Update Examples", "Delete Examples",
 				"Manage Permissions", "Manage Groups", "View Profile",
 				"Read Audit Logs", "Manage Audit Logs", "Manage Access",
+				"Create Configurations", "Read Configurations", "Update Configurations",
+				"Delete Configurations", "Manage Configurations",
 			},
 		},
 		{
