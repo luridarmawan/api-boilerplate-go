@@ -34,6 +34,7 @@ docs:
 	bash -c 'source .env && sed -i \
 		-e "s/My API Description/$${API_DESCRIPTION//\//\\/}/g" \
 		-e "s/My API/$${API_NAME//\//\\/}/g" \
+		-e "s/localhost:3000/$${BASEURL//\//\\/}/g" \
 		-e "s/1.0.0/$${API_VERSION}/g" \
 		docs/swagger.json'
 
