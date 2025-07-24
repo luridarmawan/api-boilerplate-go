@@ -27,7 +27,7 @@ import (
 // @version 1.0
 // @description My API Description
 // @contact.name API Support
-// --@host localhost:3000
+// @host localhost:3000
 // @BasePath /
 // @schemes http https
 // @securityDefinitions.apikey BearerAuth
