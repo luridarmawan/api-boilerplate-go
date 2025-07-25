@@ -24,11 +24,14 @@ type CreateExampleRequest struct {
 
 // AI Chat Completion Request and Response
 type ChatCompletionRequest struct {
-	Message     string  `json:"message" validate:"required"`
-	Model       string  `json:"model,omitempty"`
-	MaxTokens   *int    `json:"max_tokens,omitempty"`
-	Temperature *float64 `json:"temperature,omitempty"`
-	SystemPrompt string  `json:"system_prompt,omitempty"`
+	Message      string   `json:"message" validate:"required"`
+	Model        string   `json:"model,omitempty"`
+	MaxTokens    *int     `json:"max_tokens,omitempty"`
+	Temperature  *float64 `json:"temperature,omitempty"`
+	SystemPrompt string   `json:"system_prompt,omitempty"`
+	// Custom AI Provider Configuration
+	CustomEndpoint string `json:"custom_endpoint,omitempty"`
+	CustomAPIKey   string `json:"custom_api_key,omitempty"`
 }
 
 type ChatCompletionResponse struct {

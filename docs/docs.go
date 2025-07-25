@@ -2444,6 +2444,13 @@ const docTemplate = `{
                 "message"
             ],
             "properties": {
+                "custom_api_key": {
+                    "type": "string"
+                },
+                "custom_endpoint": {
+                    "description": "Custom AI Provider Configuration",
+                    "type": "string"
+                },
                 "max_tokens": {
                     "type": "integer"
                 },

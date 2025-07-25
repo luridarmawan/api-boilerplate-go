@@ -25,6 +25,35 @@ func NewHandler(repo Repository) *Handler {
 	}
 }
 
+// Helper function to create AI client based on request
+func (h *Handler) getAIClient(req ChatCompletionRequest, timeout time.Duration) *ai.Client {
+	if req.CustomEndpoint != "" && req.CustomAPIKey != "" {
+		// Use custom endpoint and API key
+		customConfig := ai.ClientConfig{
+			BaseURL: req.CustomEndpoint,
+			APIKey:  req.CustomAPIKey,
+			Timeout: timeout,
+		}
+		return ai.NewClient(customConfig)
+	}
+	// Use default client
+	return h.aiClient
+}
+
+// Helper function to validate chat completion request
+func (h *Handler) validateChatRequest(req ChatCompletionRequest) error {
+	if strings.TrimSpace(req.Message) == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Message is required")
+	}
+
+	// Validate custom endpoint and API key
+	if (req.CustomEndpoint != "" && req.CustomAPIKey == "") || (req.CustomEndpoint == "" && req.CustomAPIKey != "") {
+		return fiber.NewError(fiber.StatusBadRequest, "Both custom_endpoint and custom_api_key must be provided together")
+	}
+
+	return nil
+}
+
 // CreateExample godoc
 // @Summary Create a new example
 // @Description Create a new example with name and description
@@ -334,10 +363,10 @@ func (h *Handler) ChatCompletion(c *fiber.Ctx) error {
 	}
 
 	// Validation
-	if strings.TrimSpace(req.Message) == "" {
+	if err := h.validateChatRequest(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Message is required",
+			"message": err.Error(),
 		})
 	}
 
@@ -354,7 +383,7 @@ func (h *Handler) ChatCompletion(c *fiber.Ctx) error {
 		req.Temperature = &defaultTemperature
 	}
 	if req.SystemPrompt == "" {
-		req.SystemPrompt = "You are a helpful assistant that provides clear and concise answers."
+		req.SystemPrompt = "You are a helpful assistant from CARIK.id that provides clear and concise answers."
 	}
 
 	// Create AI request
@@ -377,8 +406,11 @@ func (h *Handler) ChatCompletion(c *fiber.Ctx) error {
 	// Record start time for processing time calculation
 	startTime := time.Now()
 
+	// Get appropriate AI client
+	aiClient := h.getAIClient(req, 30*time.Second)
+
 	// Call AI API
-	aiResponse, err := h.aiClient.CreateChatCompletion(ctx, aiRequest)
+	aiResponse, err := aiClient.CreateChatCompletion(ctx, aiRequest)
 	if err != nil {
 		// Handle AI API errors
 		if apiErr, ok := err.(*ai.APIError); ok {
@@ -452,10 +484,10 @@ func (h *Handler) ChatCompletionStream(c *fiber.Ctx) error {
 	}
 
 	// Validation
-	if strings.TrimSpace(req.Message) == "" {
+	if err := h.validateChatRequest(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Message is required",
+			"message": err.Error(),
 		})
 	}
 
@@ -472,7 +504,7 @@ func (h *Handler) ChatCompletionStream(c *fiber.Ctx) error {
 		req.Temperature = &defaultTemperature
 	}
 	if req.SystemPrompt == "" {
-		req.SystemPrompt = "You are a helpful assistant that provides clear and concise answers."
+		req.SystemPrompt = "You are a helpful assistant from CARIK.id that provides clear and concise answers."
 	}
 
 	// Set headers for Server-Sent Events
@@ -499,8 +531,11 @@ func (h *Handler) ChatCompletionStream(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.Context(), 60*time.Second)
 	defer cancel()
 
+	// Get appropriate AI client
+	aiClient := h.getAIClient(req, 60*time.Second)
+
 	// Call AI API for streaming
-	respChan, errChan := h.aiClient.CreateChatCompletionStream(ctx, aiRequest)
+	respChan, errChan := aiClient.CreateChatCompletionStream(ctx, aiRequest)
 
 	// Send initial event
 	c.WriteString("data: {\"type\":\"start\",\"message\":\"Starting AI response...\"}\n\n")
