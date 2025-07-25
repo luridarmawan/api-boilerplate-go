@@ -37,14 +37,6 @@ func main() {
 			UpdatedAt:   time.Now(),
 		},
 		{
-			Key:         "api.rate_limit.admin",
-			Value:       "1000",
-			Description: "Rate limit per minute for admin users",
-			StatusID:    int16Ptr(0), // Active
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
-		},
-		{
 			Key:         "security.jwt.expiry",
 			Value:       "24h",
 			Description: "JWT token expiry duration",

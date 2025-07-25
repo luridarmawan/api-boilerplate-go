@@ -13,9 +13,15 @@ if not exist "go.mod" (
 
 REM Step 1: Check database connection
 echo 🔍 Step 1: Checking database connection...
-go run scripts\add-admin-only-configuration-permissions.go >nul 2>&1
+go run scripts\test-database-connection.go >nul 2>&1
 if errorlevel 1 (
     echo ❌ Error: Cannot connect to database. Please check your .env configuration
+    echo 💡 Run this for detailed error info:
+    echo    go run scripts\test-database-connection.go
+    echo 💡 Make sure:
+    echo    - Database server is running
+    echo    - .env file exists with correct database settings
+    echo    - Database credentials are correct
     exit /b 1
 )
 echo ✅ Database connection successful
@@ -85,7 +91,7 @@ echo    ✅ All endpoints require authentication
 echo    ✅ Rate limiting applied
 
 echo 🧪 Test the API:
-echo    curl -X GET "http://localhost:3000/v1/configurations" ^
+echo    curl -X GET "http://localhost:3000/v1/configurations"
 echo      -H "Authorization: Bearer admin-api-key-789"
 
 echo.

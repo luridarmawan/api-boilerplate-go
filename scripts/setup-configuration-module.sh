@@ -21,8 +21,14 @@ fi
 
 # Step 1: Check database connection
 echo -e "${YELLOW}🔍 Step 1: Checking database connection...${NC}"
-if ! go run -c 'package main; import "apiserver/configs"; import "apiserver/internal/database"; func main() { config := configs.LoadConfig(); database.InitDatabase(config) }' > /dev/null 2>&1; then
+if ! go run scripts/test-database-connection.go > /dev/null 2>&1; then
     echo -e "${RED}❌ Error: Cannot connect to database. Please check your .env configuration${NC}"
+    echo -e "${YELLOW}💡 Run this for detailed error info:${NC}"
+    echo -e "   go run scripts/test-database-connection.go"
+    echo -e "${YELLOW}💡 Make sure:${NC}"
+    echo -e "   - Database server is running"
+    echo -e "   - .env file exists with correct database settings"
+    echo -e "   - Database credentials are correct"
     exit 1
 fi
 echo -e "${GREEN}✅ Database connection successful${NC}"
