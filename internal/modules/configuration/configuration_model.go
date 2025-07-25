@@ -9,7 +9,8 @@ import (
 
 type Configuration struct {
 	ID          string         `json:"id" gorm:"type:uuid;primaryKey"`
-	Name        string         `json:"name" gorm:"not null"`
+	Key         string         `json:"key" gorm:"not null;uniqueIndex"`
+	Value       string         `json:"value" gorm:"type:text"`
 	Description string         `json:"description"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
@@ -18,7 +19,13 @@ type Configuration struct {
 }
 
 type CreateConfigurationRequest struct {
-	Name        string `json:"name" validate:"required"`
+	Key         string `json:"key" validate:"required"`
+	Value       string `json:"value"`
+	Description string `json:"description"`
+}
+
+type UpdateConfigurationRequest struct {
+	Value       string `json:"value"`
 	Description string `json:"description"`
 }
 

@@ -3,6 +3,8 @@ package configuration
 import (
 	"strings"
 
+	"apiserver/internal/utils"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -38,16 +40,18 @@ func (h *Handler) CreateConfiguration(c *fiber.Ctx) error {
 	}
 
 	// Simple validation
-	if strings.TrimSpace(req.Name) == "" {
+	if strings.TrimSpace(req.Key) == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Name is required",
+			"message": "Key is required",
 		})
 	}
 
 	configuration := &Configuration{
-		Name:        req.Name,
+		Key:         req.Key,
+		Value:       req.Value,
 		Description: req.Description,
+		StatusID:    utils.Int16Ptr(0),
 	}
 
 	if err := h.repo.CreateConfiguration(configuration); err != nil {
@@ -134,7 +138,7 @@ func (h *Handler) GetConfiguration(c *fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param id path string true "Configuration ID"
-// @Param configuration body CreateConfigurationRequest true "Configuration data"
+// @Param configuration body UpdateConfigurationRequest true "Configuration data"
 // @Success 200 {object} Configuration
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
@@ -159,7 +163,7 @@ func (h *Handler) UpdateConfiguration(c *fiber.Ctx) error {
 		})
 	}
 
-	var req CreateConfigurationRequest
+	var req UpdateConfigurationRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
@@ -167,16 +171,8 @@ func (h *Handler) UpdateConfiguration(c *fiber.Ctx) error {
 		})
 	}
 
-	// Simple validation
-	if strings.TrimSpace(req.Name) == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "Name is required",
-		})
-	}
-
-	// Update configuration
-	configuration.Name = req.Name
+	// Update configuration (key cannot be changed, only value and description)
+	configuration.Value = req.Value
 	configuration.Description = req.Description
 
 	if err := h.repo.UpdateConfiguration(configuration); err != nil {
@@ -296,5 +292,42 @@ func (h *Handler) GetDeletedConfigurations(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"data":   configurations,
+	})
+}
+
+// GetConfigurationByKey godoc
+// @Summary Get configuration by key
+// @Description Get a specific configuration by its key
+// @Tags Configuration
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param key path string true "Configuration Key"
+// @Success 200 {object} Configuration
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /v1/configurations/key/{key} [get]
+func (h *Handler) GetConfigurationByKey(c *fiber.Ctx) error {
+	key := c.Params("key")
+	if key == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Invalid configuration key",
+		})
+	}
+
+	configuration, err := h.repo.GetConfigurationByKey(key)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Configuration not found",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "success",
+		"data":   configuration,
 	})
 }

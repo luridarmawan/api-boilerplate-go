@@ -8,6 +8,7 @@ type Repository interface {
 	CreateConfiguration(configuration *Configuration) error
 	GetAllConfigurations() ([]Configuration, error)
 	GetConfigurationByID(id string) (*Configuration, error)
+	GetConfigurationByKey(key string) (*Configuration, error)
 	UpdateConfiguration(configuration *Configuration) error
 	SoftDeleteConfiguration(id string) error
 	RestoreConfiguration(id string) error
@@ -57,4 +58,13 @@ func (r *repository) GetDeletedConfigurations() ([]Configuration, error) {
 	var configurations []Configuration
 	err := r.db.Where("status_id = ?", 1).Find(&configurations).Error
 	return configurations, err
+}
+
+func (r *repository) GetConfigurationByKey(key string) (*Configuration, error) {
+	var configuration Configuration
+	err := r.db.Where("key = ? AND status_id = ?", key, 0).First(&configuration).Error
+	if err != nil {
+		return nil, err
+	}
+	return &configuration, nil
 }

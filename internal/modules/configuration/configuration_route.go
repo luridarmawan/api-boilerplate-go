@@ -28,13 +28,18 @@ func RegisterConfigurationRoutes(app *fiber.App, handler *Handler, authMiddlewar
 		rateLimitMiddleware,
 		permissionMiddleware("configurations", "read"), 
 		handler.GetConfiguration)
-	v1.Put("/configurations/:id", 
+	v1.Get("/configurations/key/:key",
 		authMiddleware, 
 		rateLimitMiddleware,
-		permissionMiddleware("configurations", "update"), 
+		permissionMiddleware("configurations", "read"),
+		handler.GetConfigurationByKey)
+	v1.Put("/configurations/:id",
+		authMiddleware, 
+		rateLimitMiddleware,
+		permissionMiddleware("configurations", "update"),
 		handler.UpdateConfiguration)
 	v1.Delete("/configurations/:id", 
-		authMiddleware, 
+		authMiddleware,
 		rateLimitMiddleware,
 		permissionMiddleware("configurations", "delete"), 
 		handler.SoftDeleteConfiguration)

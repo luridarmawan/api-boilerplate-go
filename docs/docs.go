@@ -660,6 +660,79 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/configurations/key/{key}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a specific configuration by its key",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Configuration"
+                ],
+                "summary": "Get configuration by key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Configuration Key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/configuration.Configuration"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/configurations/{id}": {
             "get": {
                 "security": [
@@ -763,7 +836,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/configuration.CreateConfigurationRequest"
+                            "$ref": "#/definitions/configuration.UpdateConfigurationRequest"
                         }
                     }
                 ],
@@ -2191,7 +2264,7 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "name": {
+                "key": {
                     "type": "string"
                 },
                 "status_id": {
@@ -2199,19 +2272,36 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "value": {
+                    "type": "string"
                 }
             }
         },
         "configuration.CreateConfigurationRequest": {
             "type": "object",
             "required": [
-                "name"
+                "key"
             ],
             "properties": {
                 "description": {
                     "type": "string"
                 },
-                "name": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "configuration.UpdateConfigurationRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }

@@ -73,3 +73,28 @@ Content-Type: application/json
   "name": "Viewer Attempt",
   "description": "This should fail"
 }
+
+
+### 📋 Usage Examples:
+### ==================
+
+### Get all configurations
+curl -X GET "http://localhost:3000/v1/configurations" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get configuration by key
+curl -X GET "http://localhost:3000/v1/configurations/key/app.name" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Create new configuration
+curl -X POST "http://localhost:3000/v1/configurations" \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{"key":"custom.setting","value":"custom_value","description":"Custom setting"}'
+
+### Update configuration
+curl -X PUT "http://localhost:3000/v1/configurations/{id}" \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{"value":"new_value","description":"Updated description"}'
+

@@ -75,21 +75,32 @@ definitions:
         type: string
       id:
         type: string
-      name:
+      key:
         type: string
       status_id:
         type: integer
       updated_at:
+        type: string
+      value:
         type: string
     type: object
   configuration.CreateConfigurationRequest:
     properties:
       description:
         type: string
-      name:
+      key:
+        type: string
+      value:
         type: string
     required:
-    - name
+    - key
+    type: object
+  configuration.UpdateConfigurationRequest:
+    properties:
+      description:
+        type: string
+      value:
+        type: string
     type: object
   example.CreateExampleRequest:
     properties:
@@ -684,7 +695,7 @@ paths:
         name: configuration
         required: true
         schema:
-          $ref: '#/definitions/configuration.CreateConfigurationRequest'
+          $ref: '#/definitions/configuration.UpdateConfigurationRequest'
       produces:
       - application/json
       responses:
@@ -799,6 +810,53 @@ paths:
       security:
       - BearerAuth: []
       summary: Get deleted configurations
+      tags:
+      - Configuration
+  /v1/configurations/key/{key}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific configuration by its key
+      parameters:
+      - description: Configuration Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/configuration.Configuration'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get configuration by key
       tags:
       - Configuration
   /v1/examples:
