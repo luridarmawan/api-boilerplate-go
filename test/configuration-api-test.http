@@ -1,0 +1,100 @@
+# Configuration API Test File
+# This file contains test requests for the configuration module
+
+### Create a new configuration (Editor permission required)
+POST http://localhost:3000/v1/configurations
+Authorization: Bearer test-api-key-123
+Content-Type: application/json
+
+{
+  "name": "Sample Configuration",
+  "description": "This is a sample configuration for testing"
+}
+
+### Get all configurations (Editor permission required)
+GET http://localhost:3000/v1/configurations
+Authorization: Bearer test-api-key-123
+
+### Get configuration by ID (Editor permission required)
+# Replace {id} with an actual configuration ID
+GET http://localhost:3000/v1/configurations/{id}
+Authorization: Bearer test-api-key-123
+
+### Update configuration (Editor permission required)
+# Replace {id} with an actual configuration ID
+PUT http://localhost:3000/v1/configurations/{id}
+Authorization: Bearer test-api-key-123
+Content-Type: application/json
+
+{
+  "name": "Updated Configuration",
+  "description": "This configuration has been updated"
+}
+
+### Delete configuration (Admin permission required - will fail with test-api-key-123)
+# Replace {id} with an actual configuration ID
+DELETE http://localhost:3000/v1/configurations/{id}
+Authorization: Bearer test-api-key-123
+
+### Get deleted configurations (Editor permission required)
+GET http://localhost:3000/v1/configurations/deleted
+Authorization: Bearer test-api-key-123
+
+### Restore deleted configuration (Editor permission required)
+# Replace {id} with an actual configuration ID
+POST http://localhost:3000/v1/configurations/{id}/restore
+Authorization: Bearer test-api-key-123
+
+### Try with Admin API key (all operations should work)
+POST http://localhost:3000/v1/configurations
+Authorization: Bearer admin-api-key-789
+Content-Type: application/json
+
+{
+  "name": "Admin Created Configuration",
+  "description": "Created by admin user"
+}
+
+### Delete configuration with Admin API key (should work)
+# Replace {id} with an actual configuration ID
+DELETE http://localhost:3000/v1/configurations/{id}
+Authorization: Bearer admin-api-key-789
+
+### Test with Viewer API key (only read operations should work)
+GET http://localhost:3000/v1/configurations
+Authorization: Bearer viewer-api-key-456
+
+### Try to create with Viewer API key (should fail)
+POST http://localhost:3000/v1/configurations
+Authorization: Bearer viewer-api-key-456
+Content-Type: application/json
+
+{
+  "name": "Viewer Attempt",
+  "description": "This should fail"
+}
+
+
+### 📋 Usage Examples:
+### ==================
+
+### Get all configurations
+curl -X GET "http://localhost:3000/v1/configurations" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Get configuration by key
+curl -X GET "http://localhost:3000/v1/configurations/key/app.name" \
+  -H "Authorization: Bearer admin-api-key-789"
+
+### Create new configuration
+curl -X POST "http://localhost:3000/v1/configurations" \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{"key":"custom.setting","value":"custom_value","description":"Custom setting"}'
+
+### Update configuration
+curl -X PUT "http://localhost:3000/v1/configurations/{id}" \
+  -H "Authorization: Bearer admin-api-key-789" \
+  -H "Content-Type: application/json" \
+  -d '{"value":"new_value","description":"Updated description"}'
+
