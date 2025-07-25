@@ -22,6 +22,26 @@ type CreateExampleRequest struct {
 	Description string `json:"description"`
 }
 
+// AI Chat Completion Request and Response
+type ChatCompletionRequest struct {
+	Message     string  `json:"message" validate:"required"`
+	Model       string  `json:"model,omitempty"`
+	MaxTokens   *int    `json:"max_tokens,omitempty"`
+	Temperature *float64 `json:"temperature,omitempty"`
+	SystemPrompt string  `json:"system_prompt,omitempty"`
+}
+
+type ChatCompletionResponse struct {
+	Response string `json:"response"`
+	Model    string `json:"model"`
+	Usage    struct {
+		PromptTokens     int `json:"prompt_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
+		TotalTokens      int `json:"total_tokens"`
+	} `json:"usage"`
+	ProcessingTime string `json:"processing_time"`
+}
+
 func (Example) TableName() string {
 	return "examples"
 }

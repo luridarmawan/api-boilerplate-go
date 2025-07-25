@@ -6,7 +6,7 @@ import (
 
 func RegisterExampleRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handler, rateLimitMiddleware fiber.Handler, permissionMiddleware func(string, string) fiber.Handler) {
 	v1 := app.Group("/v1")
-	
+
 	// Protected routes with auth, rate limit, and permission checking
 	v1.Post("/examples", 
 		authMiddleware, 
@@ -43,4 +43,16 @@ func RegisterExampleRoutes(app *fiber.App, handler *Handler, authMiddleware fibe
 		rateLimitMiddleware,
 		permissionMiddleware("examples", "update"), 
 		handler.RestoreExample)
+
+	// AI Chat Completion endpoints
+	v1.Post("/examples/chat/completion",
+		authMiddleware,
+		rateLimitMiddleware,
+		permissionMiddleware("examples", "create"),
+		handler.ChatCompletion)
+	v1.Post("/examples/chat/completion/stream",
+		authMiddleware,
+		rateLimitMiddleware,
+		permissionMiddleware("examples", "create"),
+		handler.ChatCompletionStream)
 }

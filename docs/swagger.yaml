@@ -102,6 +102,39 @@ definitions:
       value:
         type: string
     type: object
+  example.ChatCompletionRequest:
+    properties:
+      max_tokens:
+        type: integer
+      message:
+        type: string
+      model:
+        type: string
+      system_prompt:
+        type: string
+      temperature:
+        type: number
+    required:
+    - message
+    type: object
+  example.ChatCompletionResponse:
+    properties:
+      model:
+        type: string
+      processing_time:
+        type: string
+      response:
+        type: string
+      usage:
+        properties:
+          completion_tokens:
+            type: integer
+          prompt_tokens:
+            type: integer
+          total_tokens:
+            type: integer
+        type: object
+    type: object
   example.CreateExampleRequest:
     properties:
       description:
@@ -1125,6 +1158,91 @@ paths:
       security:
       - BearerAuth: []
       summary: Restore example
+      tags:
+      - Example
+  /v1/examples/chat/completion:
+    post:
+      consumes:
+      - application/json
+      description: Create a chat completion using AI (OpenAI compatible API)
+      parameters:
+      - description: Chat completion request
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/example.ChatCompletionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/example.ChatCompletionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: AI Chat Completion
+      tags:
+      - Example
+  /v1/examples/chat/completion/stream:
+    post:
+      consumes:
+      - application/json
+      description: Create a streaming chat completion using AI (OpenAI compatible
+        API)
+      parameters:
+      - description: Chat completion request
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/example.ChatCompletionRequest'
+      produces:
+      - text/event-stream
+      responses:
+        "200":
+          description: Server-Sent Events stream
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: AI Chat Completion Stream
       tags:
       - Example
   /v1/examples/deleted:
