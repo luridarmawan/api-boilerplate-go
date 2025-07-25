@@ -61,19 +61,6 @@ else
     echo -e "${BLUE}ℹ️  Skipping sample data seeding${NC}"
 fi
 
-# Step 4: Generate updated Swagger documentation
-echo -e "${YELLOW}📚 Step 4: Updating Swagger documentation...${NC}"
-if command -v swag &> /dev/null; then
-    swag init -g cmd/api/main.go -o docs
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Swagger documentation updated${NC}"
-    else
-        echo -e "${YELLOW}⚠️  Swagger documentation update failed${NC}"
-    fi
-else
-    echo -e "${YELLOW}⚠️  Swag command not found. Please install swaggo/swag to update documentation${NC}"
-fi
-
 echo ""
 echo -e "${GREEN}🎉 Configuration Module Setup Complete!${NC}"
 echo -e "${BLUE}=======================================${NC}"

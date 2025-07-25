@@ -1,6 +1,7 @@
 @echo off
 REM Safe Configuration Permissions Seeder
 REM This script adds configuration permissions ONLY to Admin group
+chcp 65001 >nul
 
 echo 🔒 Configuration Permissions Seeder (Admin Only)
 echo ================================================

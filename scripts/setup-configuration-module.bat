@@ -1,6 +1,7 @@
 @echo off
 REM Configuration Module Setup Script
 REM This script sets up the configuration module with proper permissions and sample data
+chcp 65001 >nul
 
 echo 🔧 Configuration Module Setup
 echo =============================
@@ -51,20 +52,6 @@ if /i "%seedData%"=="y" (
     )
 ) else (
     echo ℹ️  Skipping sample data seeding
-)
-
-REM Step 4: Generate updated Swagger documentation
-echo 📚 Step 4: Updating Swagger documentation...
-where swag >nul 2>&1
-if errorlevel 1 (
-    echo ⚠️  Swag command not found. Please install swaggo/swag to update documentation
-) else (
-    swag init -g cmd/api/main.go -o docs
-    if errorlevel 1 (
-        echo ⚠️  Swagger documentation update failed
-    ) else (
-        echo ✅ Swagger documentation updated
-    )
 )
 
 echo.
