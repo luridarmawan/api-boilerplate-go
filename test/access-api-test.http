@@ -17,7 +17,7 @@ Content-Type: application/json
 Authorization: Bearer {{key}}
 
 {
-  "email": "user1@example.com",
+  "email": "user@example.com",
   "full_name": "John Doe"
 }
 
