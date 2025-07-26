@@ -37,7 +37,7 @@ func NewAuthMiddleware(authRepo types.AuthRepository) fiber.Handler {
 		}
 
 		// Validate token against database
-		user, err := authRepo.FindByAPIKey(token)
+		access, err := authRepo.FindByAPIKey(token)
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"status":  "error",
@@ -46,8 +46,10 @@ func NewAuthMiddleware(authRepo types.AuthRepository) fiber.Handler {
 		}
 
 		// Store user information in context
-		c.Locals("userID", user.GetID())
-		c.Locals("user", user)
+		c.Locals("access_id", access.GetID())
+		c.Locals("access", access)
+		c.Locals("userID", access.GetID())
+		c.Locals("user", access)
 
 		return c.Next()
 	}
