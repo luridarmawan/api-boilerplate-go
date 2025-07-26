@@ -1,15 +1,23 @@
 @BaseURL=http://localhost:3000
-@key=test-api-key-123
 @key=admin-api-key-789
 
-
 ### Create new access
-POST {{BaseURL}}/v1/access
+# Expected response:
+# {
+#   "status": "success",
+#   "data": {
+#     "id": "01234567-89ab-cdef-0123-456789abcdef",
+#     "api_key": "sk_[generated_secure_key]",
+#     "expired_date": "2025-07-26T10:30:00Z",
+#     "rate_limit": 120
+#   }
+# }
+POST http://localhost:3000/v1/access
 Content-Type: application/json
 Authorization: Bearer {{key}}
 
 {
-  "email": "user@example.com",
+  "email": "user1@example.com",
   "full_name": "John Doe"
 }
 

@@ -67,6 +67,7 @@ type CreateAccessRequest struct {
 
 // CreateAccessResponse is the response body for creating new access
 type CreateAccessResponse struct {
+	ID          string     `json:"id"`
 	APIKey      string     `json:"api_key"`
 	ExpiredDate *time.Time `json:"expired_date"`
 	RateLimit   int        `json:"rate_limit"`

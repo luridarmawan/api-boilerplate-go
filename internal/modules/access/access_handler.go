@@ -251,7 +251,7 @@ func (h *Handler) UpdateRateLimit(c *fiber.Ctx) error {
 // CreateAccess godoc
 // SWAGGER_ACCESS_START
 // @Summary Create new access
-// @Description Create new access with API key, default expiration (6 months), group_id 4, and rate limit 120
+// @Description Create new access to platform
 // @Tags Access
 // @Accept json
 // @Produce json
@@ -291,7 +291,7 @@ func (h *Handler) CreateAccess(c *fiber.Ctx) error {
 	expiredDate := time.Now().AddDate(0, 6, 0)
 
 	// Create new user
-	user := &User{
+	access := &User{
 		Name:        req.FullName,
 		Email:       req.Email,
 		APIKey:      apiKey,
@@ -302,7 +302,7 @@ func (h *Handler) CreateAccess(c *fiber.Ctx) error {
 	}
 
 	// Save to database
-	if err := h.repo.CreateUser(user); err != nil {
+	if err := h.repo.CreateUser(access); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Failed to create access",
@@ -311,6 +311,7 @@ func (h *Handler) CreateAccess(c *fiber.Ctx) error {
 
 	// Prepare response
 	response := CreateAccessResponse{
+		ID:          access.ID,
 		APIKey:      apiKey,
 		ExpiredDate: &expiredDate,
 		RateLimit:   120,

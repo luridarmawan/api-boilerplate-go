@@ -19,7 +19,7 @@ const docTemplate = `{
     "paths": {
         "/v1/access": {
             "post": {
-                "description": "Create new access with API key, default expiration (6 months), group_id 4, and rate limit 120",
+                "description": "Create new access to platform",
                 "consumes": [
                     "application/json"
                 ],
