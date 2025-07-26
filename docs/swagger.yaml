@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  access.CreateAccessRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        maxLength: 100
+        minLength: 2
+        type: string
+    required:
+    - email
+    - full_name
+    type: object
   access.UpdateExpiredDateRequest:
     properties:
       expired_date:
@@ -239,6 +251,42 @@ info:
   title: My API
   version: "1.0"
 paths:
+  /v1/access:
+    post:
+      consumes:
+      - application/json
+      description: Create new access with API key, default expiration (6 months),
+        group_id 4, and rate limit 120
+      parameters:
+      - description: Access creation data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/access.CreateAccessRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create new access
+      tags:
+      - Access
   /v1/access/{id}/expired-date:
     delete:
       consumes:

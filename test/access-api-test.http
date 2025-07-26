@@ -1,0 +1,54 @@
+@BaseURL=http://localhost:3000
+@key=test-api-key-123
+@key=admin-api-key-789
+
+
+### Create new access
+POST {{BaseURL}}/v1/access
+Content-Type: application/json
+Authorization: Bearer {{key}}
+
+{
+  "email": "user@example.com",
+  "full_name": "John Doe"
+}
+
+### Create new access - Invalid email
+POST {{BaseURL}}/v1/access
+Content-Type: application/json
+
+{
+  "email": "",
+  "full_name": "John Doe"
+}
+
+### Create new access - Missing full name
+POST {{BaseURL}}/v1/access
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "full_name": ""
+}
+
+### Create new access - Invalid JSON
+POST {{BaseURL}}/v1/access
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+  "full_name": "John Doe"
+}
+
+### Create new access - Duplicate email (run this after the first successful request)
+POST {{BaseURL}}/v1/access
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "full_name": "Jane Doe"
+}
+
+### Create new access - Invalid email format
+POST {{BaseURL}}/v1/access
+Content-Type: applicati

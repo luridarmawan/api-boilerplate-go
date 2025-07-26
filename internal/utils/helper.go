@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"regexp"
 	"strings"
 )
@@ -43,5 +45,18 @@ func FormatMessage(message string) string {
 	result = strings.TrimSpace(result)
 
 	return result
+}
+
+// GenerateAPIKey generates a secure random API key
+func GenerateAPIKey() string {
+	// Generate 32 random bytes
+	bytes := make([]byte, 32)
+	rand.Read(bytes)
+
+	// Encode to base64 and remove padding
+	apiKey := base64.URLEncoding.EncodeToString(bytes)
+	apiKey = strings.TrimRight(apiKey, "=")
+
+	return "sk-" + apiKey
 }
 

@@ -59,6 +59,19 @@ type UpdateRateLimitRequest struct {
 	RateLimit int `json:"rate_limit" validate:"required,min=1"`
 }
 
+// CreateAccessRequest is the request body for creating new access
+type CreateAccessRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	FullName string `json:"full_name" validate:"required,min=2,max=100"`
+}
+
+// CreateAccessResponse is the response body for creating new access
+type CreateAccessResponse struct {
+	APIKey      string     `json:"api_key"`
+	ExpiredDate *time.Time `json:"expired_date"`
+	RateLimit   int        `json:"rate_limit"`
+}
+
 // BeforeCreate hook to generate UUIDv7 before creating a new user
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	if u.ID == "" {
