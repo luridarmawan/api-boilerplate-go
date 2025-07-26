@@ -40,7 +40,14 @@ func SimpleExample() {
 		return
 	}
 
-	fmt.Printf("AI Response: %s\n", response.Choices[0].Message.Content)
+	// Handle content type assertion
+	var content string
+	if str, ok := response.Choices[0].Message.Content.(string); ok {
+		content = str
+	} else {
+		content = "Unable to parse response content"
+	}
+	fmt.Printf("AI Response: %s\n", content)
 	fmt.Printf("Tokens used: %d\n\n", response.Usage.TotalTokens)
 
 	// Example 2: Create embedding

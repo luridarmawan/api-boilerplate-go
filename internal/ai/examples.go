@@ -34,7 +34,14 @@ func ExampleUsage() {
 		return
 	}
 
-	fmt.Printf("Response: %s\n", chatResp.Choices[0].Message.Content)
+	// Handle content type assertion
+	var content string
+	if str, ok := chatResp.Choices[0].Message.Content.(string); ok {
+		content = str
+	} else {
+		content = "Unable to parse response content"
+	}
+	fmt.Printf("Response: %s\n", content)
 	fmt.Printf("Usage: %+v\n", chatResp.Usage)
 
 	// Example 2: Streaming chat completion

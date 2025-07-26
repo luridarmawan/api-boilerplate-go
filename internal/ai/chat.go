@@ -110,6 +110,26 @@ func NewUserMessage(content string) ChatMessage {
 	}
 }
 
+// NewUserMessageWithImage creates a user message with image
+func NewUserMessageWithImage(text, imageURL string) ChatMessage {
+	return ChatMessage{
+		Role: "user",
+		Content: []MessageContent{
+			{
+				Type: "text",
+				Text: text,
+			},
+			{
+				Type: "image_url",
+				ImageURL: &ImageURL{
+					URL:    imageURL,
+					Detail: "high",
+				},
+			},
+		},
+	}
+}
+
 // NewAssistantMessage creates an assistant message
 func NewAssistantMessage(content string) ChatMessage {
 	return ChatMessage{

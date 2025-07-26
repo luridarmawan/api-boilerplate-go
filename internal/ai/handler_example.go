@@ -94,8 +94,16 @@ func (h *ChatHandler) handleRegularChat(c *fiber.Ctx, ctx context.Context, req C
 		})
 	}
 
+	// Handle content type assertion
+	var content string
+	if str, ok := resp.Choices[0].Message.Content.(string); ok {
+		content = str
+	} else {
+		content = "Unable to parse response content"
+	}
+
 	response := ChatResponse{
-		Response: resp.Choices[0].Message.Content,
+		Response: content,
 		Model:    resp.Model,
 		Usage:    resp.Usage,
 	}

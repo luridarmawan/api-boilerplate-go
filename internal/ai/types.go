@@ -24,10 +24,23 @@ type ChatCompletionRequest struct {
 // ChatMessage represents a message in chat completion
 type ChatMessage struct {
 	Role         string       `json:"role"`
-	Content      string       `json:"content"`
+	Content      interface{}  `json:"content"` // Can be string or array for vision models
 	Name         string       `json:"name,omitempty"`
 	ToolCalls    []ToolCall   `json:"tool_calls,omitempty"`
 	ToolCallID   string       `json:"tool_call_id,omitempty"`
+}
+
+// MessageContent represents content for vision models
+type MessageContent struct {
+	Type     string    `json:"type"`
+	Text     string    `json:"text,omitempty"`
+	ImageURL *ImageURL `json:"image_url,omitempty"`
+}
+
+// ImageURL represents an image URL for vision models
+type ImageURL struct {
+	URL    string `json:"url"`
+	Detail string `json:"detail,omitempty"`
 }
 
 // Tool represents a function tool

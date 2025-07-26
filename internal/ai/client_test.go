@@ -124,8 +124,16 @@ func TestCreateChatCompletion(t *testing.T) {
 		t.Errorf("Expected 1 choice, got %d", len(resp.Choices))
 	}
 
-	if resp.Choices[0].Message.Content != "Hello! How can I help you today?" {
-		t.Errorf("Unexpected response content: %s", resp.Choices[0].Message.Content)
+	// Handle content type assertion
+	var content string
+	if str, ok := resp.Choices[0].Message.Content.(string); ok {
+		content = str
+	} else {
+		content = ""
+	}
+
+	if content != "Hello! How can I help you today?" {
+		t.Errorf("Unexpected response content: %s", content)
 	}
 }
 
@@ -314,8 +322,8 @@ func TestHelperFunctions(t *testing.T) {
 	if sysMsg.Role != "system" {
 		t.Errorf("Expected role 'system', got %s", sysMsg.Role)
 	}
-	if sysMsg.Content != "You are a helpful assistant" {
-		t.Errorf("Expected content 'You are a helpful assistant', got %s", sysMsg.Content)
+	if str, ok := sysMsg.Content.(string); !ok || str != "You are a helpful assistant" {
+		t.Errorf("Expected content 'You are a helpful assistant', got %v", sysMsg.Content)
 	}
 
 	// Test NewUserMessage
@@ -323,8 +331,8 @@ func TestHelperFunctions(t *testing.T) {
 	if userMsg.Role != "user" {
 		t.Errorf("Expected role 'user', got %s", userMsg.Role)
 	}
-	if userMsg.Content != "Hello" {
-		t.Errorf("Expected content 'Hello', got %s", userMsg.Content)
+	if str, ok := userMsg.Content.(string); !ok || str != "Hello" {
+		t.Errorf("Expected content 'Hello', got %v", userMsg.Content)
 	}
 
 	// Test NewAssistantMessage
@@ -332,8 +340,8 @@ func TestHelperFunctions(t *testing.T) {
 	if assistantMsg.Role != "assistant" {
 		t.Errorf("Expected role 'assistant', got %s", assistantMsg.Role)
 	}
-	if assistantMsg.Content != "Hi there!" {
-		t.Errorf("Expected content 'Hi there!', got %s", assistantMsg.Content)
+	if str, ok := assistantMsg.Content.(string); !ok || str != "Hi there!" {
+		t.Errorf("Expected content 'Hi there!', got %v", assistantMsg.Content)
 	}
 
 	// Test NewToolMessage

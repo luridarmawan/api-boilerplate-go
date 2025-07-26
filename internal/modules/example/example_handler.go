@@ -438,9 +438,17 @@ func (h *Handler) ChatCompletion(c *fiber.Ctx) error {
 		})
 	}
 
+	// Handle content type assertion
+	var content string
+	if str, ok := aiResponse.Choices[0].Message.Content.(string); ok {
+		content = str
+	} else {
+		content = "Unable to parse response content"
+	}
+
 	// Build response
 	response := ChatCompletionResponse{
-		Response: aiResponse.Choices[0].Message.Content,
+		Response: content,
 		Model:    aiResponse.Model,
 		Usage: struct {
 			PromptTokens     int `json:"prompt_tokens"`
@@ -550,11 +558,19 @@ func (h *Handler) ChatCompletionStream(c *fiber.Ctx) error {
 				return nil
 			}
 
-			if len(resp.Choices) > 0 && resp.Choices[0].Delta.Content != "" {
-				// Send content chunk
-				c.WriteString("data: {\"type\":\"content\",\"content\":\"" +
-					strings.ReplaceAll(resp.Choices[0].Delta.Content, "\"", "\\\"") +
-					"\",\"model\":\"" + resp.Model + "\"}\n\n")
+			if len(resp.Choices) > 0 {
+				// Handle content type assertion for delta
+				var deltaContent string
+				if str, ok := resp.Choices[0].Delta.Content.(string); ok {
+					deltaContent = str
+				}
+
+				if deltaContent != "" {
+					// Send content chunk
+					c.WriteString("data: {\"type\":\"content\",\"content\":\"" +
+						strings.ReplaceAll(deltaContent, "\"", "\\\"") +
+						"\",\"model\":\"" + resp.Model + "\"}\n\n")
+				}
 			}
 
 		case err := <-errChan:
