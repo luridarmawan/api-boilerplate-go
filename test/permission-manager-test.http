@@ -1,0 +1,86 @@
+# Permission Manager CLI Tool Test File
+# This file contains test scenarios for the permission-manager CLI tool
+
+### Test Scenario 1: Valid permission addition
+# Prerequisites: 
+# - Access ID exists in database
+# - Permission 'configurations:create' exists
+# - Access ID belongs to a group
+# Command: ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations create
+# Expected: ✓ Permission 'configurations:create' successfully added to group 'GroupName' for access ID '019847a9-4efb-72c1-92fb-2c5eab3335d1'
+
+### Test Scenario 2: Invalid access ID
+# Command: ./bin/permission-manager invalid-uuid-format configurations create
+# Expected: ✗ Error: access_id must be a valid UUID format
+
+### Test Scenario 3: Non-existent access ID
+# Command: ./bin/permission-manager 00000000-0000-0000-0000-000000000000 configurations create
+# Expected: ✗ Error: Access ID '00000000-0000-0000-0000-000000000000' not found
+
+### Test Scenario 4: Non-existent permission
+# Command: ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 nonexistent create
+# Expected: ✗ Error: Permission 'nonexistent:create' not found in database
+
+### Test Scenario 5: Permission already exists in group
+# Prerequisites: Permission already assigned to the group
+# Command: ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations create
+# Expected: ⚠ Warning: Permission 'configurations:create' already exists in group 'GroupName'
+
+### Test Scenario 6: Help flag
+# Command: ./bin/permission-manager --help
+# Expected: Usage information displayed
+
+### Test Scenario 7: No arguments
+# Command: ./bin/permission-manager
+# Expected: ✗ Error: invalid number of arguments + Usage information
+
+### Test Scenario 8: Missing arguments
+# Command: ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1
+# Expected: ✗ Error: invalid number of arguments + Usage information
+
+### Test Scenario 9: Empty arguments
+# Command: ./bin/permission-manager "" configurations create
+# Expected: ✗ Error: access_id cannot be empty
+
+### Test Scenario 10: Access ID without group
+# Prerequisites: Access ID exists but has no group assigned (group_id is NULL)
+# Command: ./bin/permission-manager <access-id-without-group> configurations create
+# Expected: ✗ Error: Access ID '<access-id>' is not assigned to any group
+
+### Common Test Commands for Manual Testing:
+
+# Build the tool first:
+# ./scripts/build-permission-manager.sh
+
+# Test with existing data (replace with actual IDs from your database):
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations create
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations read
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations update
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations delete
+
+# Test error cases:
+# ./bin/permission-manager invalid-id configurations create
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 invalid-resource create
+# ./bin/permission-manager 019847a9-4efb-72c1-92fb-2c5eab3335d1 configurations invalid-action
+
+# Test help:
+# ./bin/permission-manager --help
+# ./bin/permission-manager -h
+
+### Database Queries to Verify Results:
+
+# Check if permission was added to group:
+# SELECT g.name as group_name, p.name as permission_name, p.resource, p.action
+# FROM groups g
+# JOIN group_permissions gp ON g.id = gp.group_id
+# JOIN permissions p ON p.id = gp.permission_id
+# WHERE g.id = (SELECT group_id FROM access WHERE id = 'your-access-id');
+
+# Check access user and group:
+# SELECT a.id, a.name, a.email, g.name as group_name
+# FROM access a
+# LEFT JOIN groups g ON a.group_id = g.id
+# WHERE a.id = 'your-access-id';
+
+# List all permissions:
+# SELECT id, name, resource, action FROM permissions WHERE status_id = 0;

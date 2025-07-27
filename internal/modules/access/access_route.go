@@ -7,6 +7,13 @@ import (
 func RegisterAccessRoutes(app *fiber.App, handler *Handler, authMiddleware fiber.Handler, rateLimitMiddleware fiber.Handler, permissionMiddleware func(string, string) fiber.Handler) {
 	v1 := app.Group("/v1")
 	
+	// Public route for creating access
+	v1.Post("/access",
+		authMiddleware,
+		rateLimitMiddleware,
+		permissionMiddleware("access", "manage"),
+		handler.CreateAccess)
+
 	// Protected routes with auth, rate limit, and permission checking
 	v1.Get("/profile",
 		authMiddleware,

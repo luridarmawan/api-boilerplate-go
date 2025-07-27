@@ -63,8 +63,11 @@ go run cmd/api/main.go
 ```
 apiserver/
 ├── cmd/
-│   └── api/
-│       └── main.go              # Entry point aplikasi
+│   ├── api/
+│   │   └── main.go              # Entry point aplikasi
+│   └── permission-manager/      # CLI tool untuk mengelola permissions
+│       ├── main.go              # Permission manager CLI
+│       └── README.md            # Documentation CLI tool
 ├── configs/
 │   └── config.go                # Fungsi untuk load .env
 ├── internal/
@@ -101,6 +104,11 @@ apiserver/
 │           ├── example_model.go
 │           ├── example_repository.go
 │           └── example_route.go
+├── scripts/
+│   ├── build-permission-manager.sh  # Build script untuk CLI tool (Linux/macOS)
+│   └── build-permission-manager.bat # Build script untuk CLI tool (Windows)
+├── test/
+│   └── permission-manager-test.http # Test scenarios untuk CLI tool
 ├── docs/                        # Folder untuk file swagger yang digenerasi
 ├── .env.example                 # Contoh file environment
 ├── go.mod
@@ -381,7 +389,6 @@ productHandler := product.NewHandler(productRepo)
 product.RegisterProductRoutes(app, productHandler, authMiddleware)
 ```
 
-
 ## 🧰 Development Tools
 
 - **Hot reload**: `air` untuk development
@@ -389,6 +396,7 @@ product.RegisterProductRoutes(app, productHandler, authMiddleware)
 - **Database**: `PostgreSQL` dengan GORM
 - **Documentation**: Swagger dengan filtering tool
 - **API Filtering**: Custom tool untuk filter endpoint berdasarkan tags
+- **Permission Manager CLI**: [CLI tool untuk mengelola permissions](docs/PERMISSION-MANAGER.md)
 
 ### Swagger Documentation Tools
 

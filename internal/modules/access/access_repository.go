@@ -12,6 +12,8 @@ type Repository interface {
 	UpdateExpiredDate(id string, expiredDate *time.Time) error
 	UpdateRateLimit(id string, rateLimit int) error
 	GetUserByID(id string) (*User, error)
+	CreateUser(user *User) error
+	FindByEmail(email string) (*User, error)
 }
 
 // AuthRepositoryImpl implements types.AuthRepository
@@ -71,4 +73,17 @@ func (r *repository) GetUserByID(id string) (*User, error) {
 
 func (r *repository) UpdateRateLimit(id string, rateLimit int) error {
 	return r.db.Model(&User{}).Where("id = ?", id).Update("rate_limit", rateLimit).Error
+}
+
+func (r *repository) CreateUser(user *User) error {
+	return r.db.Create(user).Error
+}
+
+func (r *repository) FindByEmail(email string) (*User, error) {
+	var user User
+	err := r.db.Where("email = ? AND status_id = ?", email, 0).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

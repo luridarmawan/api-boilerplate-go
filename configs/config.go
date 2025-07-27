@@ -21,6 +21,11 @@ type Config struct {
 	ServerPort string
 	DocFilter  string
 
+	// AI Configuration
+	AIBaseURL string
+	AIAPIKey  string
+	AITimeout string
+
 	// Build info
 	Version   string
 	GitCommit string
@@ -53,6 +58,11 @@ func LoadConfig() *Config {
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 		ServerPort: getEnv("SERVER_PORT", "3000"),
 		DocFilter:  getEnv("API_DOC_FILTER", ""),
+
+		// AI Configuration
+		AIBaseURL: getEnv("AI_BASE_URL", "https://api.openai.com/v1"),
+		AIAPIKey:  getEnv("AI_API_KEY", ""),
+		AITimeout: getEnv("AI_TIMEOUT", "30"),
 
 		// Inject build-time values
 		Version:   Version,

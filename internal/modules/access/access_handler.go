@@ -3,15 +3,22 @@ package access
 import (
 	"time"
 
+	"apiserver/internal/utils"
+
+	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
-	repo Repository
+	repo      Repository
+	validator *validator.Validate
 }
 
 func NewHandler(repo Repository) *Handler {
-	return &Handler{repo: repo}
+	return &Handler{
+		repo:      repo,
+		validator: validator.New(),
+	}
 }
 
 // GetProfile godoc
@@ -238,5 +245,81 @@ func (h *Handler) UpdateRateLimit(c *fiber.Ctx) error {
 			"email":      user.Email,
 			"rate_limit": req.RateLimit,
 		},
+	})
+}
+
+// CreateAccess godoc
+// SWAGGER_ACCESS_START
+// @Summary Create new access
+// @Description Create new access to platform
+// @Tags Access
+// @Accept json
+// @Produce json
+// @Param data body CreateAccessRequest true "Access creation data"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /v1/access [post]
+// SWAGGER_ACCESS_END
+func (h *Handler) CreateAccess(c *fiber.Ctx) error {
+	// Parse request body
+	var req CreateAccessRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Invalid request body",
+		})
+	}
+
+	// Validate request
+	if err := h.validator.Struct(&req); err != nil {
+		return utils.HandleError(c, err)
+	}
+
+	// Check if email already exists
+	if existingUser, err := h.repo.FindByEmail(req.Email); err == nil && existingUser != nil {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Email already exists",
+		})
+	}
+
+	// Generate API key
+	apiKey := utils.GenerateAPIKey()
+
+	// Set default expiration date (6 months from now)
+	expiredDate := time.Now().AddDate(0, 6, 0)
+
+	// Create new user
+	access := &User{
+		Name:        req.FullName,
+		Email:       req.Email,
+		APIKey:      apiKey,
+		GroupID:     utils.UintPtr(4), // Default group_id: 4 (generic client)
+		ExpiredDate: &expiredDate,
+		RateLimit:   120, // Default rate limit: 120
+		StatusID:    utils.Int16Ptr(0), // Active status
+	}
+
+	// Save to database
+	if err := h.repo.CreateUser(access); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Failed to create access",
+		})
+	}
+
+	// Prepare response
+	response := CreateAccessResponse{
+		ID:          access.ID,
+		APIKey:      apiKey,
+		ExpiredDate: &expiredDate,
+		RateLimit:   120,
+	}
+
+	// Return success response
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status": "success",
+		"data":   response,
 	})
 }
