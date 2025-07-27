@@ -389,6 +389,8 @@ productHandler := product.NewHandler(productRepo)
 product.RegisterProductRoutes(app, productHandler, authMiddleware)
 ```
 
+Or use *[Module Generator](docs/MODULE-GENERATOR-WITH-PERMISSIONS.md)* tools to simplify.
+
 ## 🧰 Development Tools
 
 - **Hot reload**: `air` untuk development
