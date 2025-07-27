@@ -464,6 +464,12 @@ spec:
    sudo cp scripts/api-hub.service /etc/systemd/system/
    sudo systemctl enable api-hub
    sudo systemctl start api-hub
+
+   # if create systemd service in user
+   # location: ~/.config/systemd/user/
+   mkdir -p ~/.config/systemd/user
+   # copy scripts/ap-server.service to this location
+
    ```
 
 ### Systemd Service
@@ -624,6 +630,37 @@ netstat -tlnp | grep :3000
 3. **Database Optimization**: Configure connection pooling and indexing
 
 4. **Caching**: Implement Redis for caching frequently accessed data
+
+
+## TROUBLESHOOT
+
+muncul error: `Error "Failed to connect to bus: No medium found"`:
+biasanya terjadi ketika sistem D-Bus user tidak berjalan dengan benar. Berikut solusi untuk memperbaikinya di AlmaLinux:
+
+### SOLUSI
+
+1. Pastikan linger diaktifkan:
+```
+loginctl enable-linger $(whoami)
+```
+
+2. Inisialisasi environment D-Bus:
+```
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export DBUS_SESSION_BUS_ADDRESS=unix:path=${XDG_RUNTIME_DIR}/bus
+```
+
+3. Mulai service D-Bus secara manual:
+```
+systemctl --user start dbus.socket
+systemctl --user start dbus.service
+```
+
+4. Verifikasi koneksi:
+```
+busctl --user list
+```
+
 
 ---
 

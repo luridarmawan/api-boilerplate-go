@@ -1,0 +1,31 @@
+# Service as User
+# location folder: ~/.config/systemd/user/
+# Reload daemon untuk user
+#   systemctl --user daemon-reload
+# Enable agar otomatis jalan saat login
+#   systemctl --user enable api-server
+# Start sekarang
+#   systemctl --user start api-server
+#
+# Cek status dan log
+#   systemctl --user status api-server
+#   journalctl --user -u api-server -f
+#
+# Note:
+# - aktifkan linger
+#   sudo loginctl enable-linger [username]
+
+[Unit]
+Description=User API Hub Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/production/app/api-hub/bin/api-server
+WorkingDirectory=/home/production/app/api-hub
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
