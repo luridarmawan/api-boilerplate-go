@@ -3,6 +3,8 @@ package permission
 import (
 	"time"
 
+	"apiserver/internal/utils"
+
 	"gorm.io/gorm"
 )
 
@@ -26,5 +28,5 @@ type CreatePermissionRequest struct {
 }
 
 func (Permission) TableName() string {
-	return "permissions"
+	return utils.GetTableName("permissions")
 }

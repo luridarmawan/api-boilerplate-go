@@ -25,7 +25,7 @@ type User struct {
 }
 
 func (User) TableName() string {
-	return "access"
+	return utils.GetTableName("access")
 }
 
 // Implement User interface
@@ -49,6 +49,7 @@ func (u *User) GetGroup() *group.Group {
 type UpdateExpiredDateRequest struct {
 	ExpiredDate *time.Time `json:"expired_date"`
 }
+
 // GetRateLimit returns the rate limit for this user
 func (u *User) GetRateLimit() int {
 	return u.RateLimit

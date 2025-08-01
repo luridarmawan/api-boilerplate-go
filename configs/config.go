@@ -8,18 +8,19 @@ import (
 )
 
 type Config struct {
-	APIName    string
+	APIName        string
 	APIDescription string
-	APIVersion string
-	BaseURL    string
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
-	ServerPort string
-	DocFilter  string
+	APIVersion     string
+	BaseURL        string
+	DBHost         string
+	DBPort         string
+	DBUser         string
+	DBPassword     string
+	DBName         string
+	DBSSLMode      string
+	DBTablePrefix  string
+	ServerPort     string
+	DocFilter      string
 
 	// AI Configuration
 	AIBaseURL string
@@ -46,18 +47,19 @@ func LoadConfig() *Config {
 	}
 
 	return &Config{
-		APIName:     getEnv("API_NAME", "My API Name"),
-		APIDescription:     getEnv("API_DESCRIPTION", "My API Description"),
+		APIName:        getEnv("API_NAME", "My API Name"),
+		APIDescription: getEnv("API_DESCRIPTION", "My API Description"),
 		APIVersion:     getEnv("API_VERSION", "0.0.0"),
-		BaseURL:     getEnv("BASEURL", "localhost:" + getEnv("SERVER_PORT", "3000")),
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "password"),
-		DBName:     getEnv("DB_NAME", "my_api_db"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
-		ServerPort: getEnv("SERVER_PORT", "3000"),
-		DocFilter:  getEnv("API_DOC_FILTER", ""),
+		BaseURL:        getEnv("BASEURL", "localhost:"+getEnv("SERVER_PORT", "3000")),
+		DBHost:         getEnv("DB_HOST", "localhost"),
+		DBPort:         getEnv("DB_PORT", "5432"),
+		DBUser:         getEnv("DB_USER", "postgres"),
+		DBPassword:     getEnv("DB_PASSWORD", "password"),
+		DBName:         getEnv("DB_NAME", "my_api_db"),
+		DBSSLMode:      getEnv("DB_SSLMODE", "disable"),
+		DBTablePrefix:  getEnv("DB_TABLE_PREFIX", ""),
+		ServerPort:     getEnv("SERVER_PORT", "3000"),
+		DocFilter:      getEnv("API_DOC_FILTER", ""),
 
 		// AI Configuration
 		AIBaseURL: getEnv("AI_BASE_URL", "https://api.openai.com/v1"),

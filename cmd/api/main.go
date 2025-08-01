@@ -11,17 +11,18 @@ import (
 	"apiserver/internal/middleware"
 	"apiserver/internal/modules/access"
 	"apiserver/internal/modules/audit"
-	"apiserver/internal/modules/group"
-	"apiserver/internal/modules/permission"
 	"apiserver/internal/modules/configuration"
 	"apiserver/internal/modules/example"
+	"apiserver/internal/modules/group"
+	"apiserver/internal/modules/permission"
 	"apiserver/internal/utils"
+
+	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
-	"path/filepath"
 )
 
 // @title My API

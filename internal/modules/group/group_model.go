@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"apiserver/internal/modules/permission"
+	"apiserver/internal/utils"
 
 	"gorm.io/gorm"
 )
@@ -20,8 +21,8 @@ type Group struct {
 }
 
 type CreateGroupRequest struct {
-	Name         string `json:"name" validate:"required"`
-	Description  string `json:"description"`
+	Name          string `json:"name" validate:"required"`
+	Description   string `json:"description"`
 	PermissionIDs []uint `json:"permission_ids"`
 }
 
@@ -30,5 +31,5 @@ type UpdateGroupPermissionsRequest struct {
 }
 
 func (Group) TableName() string {
-	return "groups"
+	return utils.GetTableName("groups")
 }

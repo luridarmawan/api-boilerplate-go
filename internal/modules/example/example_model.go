@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"apiserver/internal/utils"
+
 	"gorm.io/gorm"
 )
 
@@ -46,7 +47,7 @@ type ChatCompletionResponse struct {
 }
 
 func (Example) TableName() string {
-	return "examples"
+	return utils.GetTableName("examples")
 }
 
 // BeforeCreate hook to generate UUIDv7 before creating a new example

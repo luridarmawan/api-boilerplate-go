@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"apiserver/internal/utils"
+
 	"gorm.io/gorm"
 )
 
@@ -30,7 +31,7 @@ type UpdateConfigurationRequest struct {
 }
 
 func (Configuration) TableName() string {
-	return "configurations"
+	return utils.GetTableName("configurations")
 }
 
 // BeforeCreate hook to generate UUIDv7 before creating a new configuration

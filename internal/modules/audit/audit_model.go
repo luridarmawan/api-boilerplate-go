@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"apiserver/internal/utils"
+
 	"gorm.io/gorm"
 )
 
@@ -50,7 +51,7 @@ type AuditLogFilter struct {
 }
 
 func (AuditLog) TableName() string {
-	return "audit_logs"
+	return utils.GetTableName("audit_logs")
 }
 
 // BeforeCreate hook to generate UUIDv7 before creating a new audit log

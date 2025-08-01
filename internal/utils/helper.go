@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -60,3 +61,20 @@ func GenerateAPIKey() string {
 	return "sk-" + apiKey
 }
 
+// GetTableName returns the table name with prefix from environment variable
+func GetTableName(tableName string) string {
+	prefix := os.Getenv("DB_TABLE_PREFIX")
+	if prefix == "" {
+		return tableName
+	}
+	return prefix + tableName
+}
+
+// GetJoinTableName returns the join table name with prefix for many-to-many relationships
+func GetJoinTableName(joinTableName string) string {
+	prefix := os.Getenv("DB_TABLE_PREFIX")
+	if prefix == "" {
+		return joinTableName
+	}
+	return prefix + joinTableName
+}
